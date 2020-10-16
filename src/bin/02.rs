@@ -40,7 +40,7 @@ fn part1(inp: &Vec<usize>) -> Option<usize> {
     run(inp, 12, 2)
 }
 
-fn part2(inp: &Vec<usize>) -> Option<(usize)> {
+fn part2(inp: &Vec<usize>) -> Option<usize> {
     for i in 0..=99 {
         for j in 0..=99 {
             let r = run(inp, i, j);
@@ -54,9 +54,9 @@ fn part2(inp: &Vec<usize>) -> Option<(usize)> {
 }
 
 fn main() -> io::Result<()> {
-    let input = aoc2019::read_stdin_to_string().map(|l: String| {
+    let input = aoc2019::read_stdin_to_string().map(|l| {
         l.split(",")
-            .map(|i| i.parse::<usize>().unwrap())
+            .map(|i| i.parse::<usize>().expect("Non-numeric input"))
             .collect::<Vec<usize>>()
     })?;
 

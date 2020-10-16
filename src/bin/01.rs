@@ -8,22 +8,19 @@ fn part1(inp: &Vec<String>) {
     println!("Part 1: {}", s);
 }
 
-fn full_fuel(module: u32) -> u32 {
-    let mut prev = module;
-    let mut sum = 0;
-
-    while prev > 0 {
-        prev = (prev / 3).saturating_sub(2);
-        sum += prev;
-    }
-
-    sum
+fn full_fuel2(module: u32) -> u32 {
+    let f = (module / 3).saturating_sub(2);
+    if f > 0 { 
+        f + full_fuel2(f) 
+    } else { 
+        f
+    } 
 }
 
 fn part2(inp: &Vec<String>) {
     let s: u32 = inp.iter()
         .filter_map(|l| l.parse::<u32>().ok())
-        .map(|w| full_fuel(w))
+        .map(|w| full_fuel2(w))
         .sum();
     println!("Part 2: {}", s);
 }
