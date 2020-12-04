@@ -3,6 +3,7 @@ use std::iter::Iterator;
 use std::str::FromStr;
 use num_integer::Integer;
 use regex::Regex;
+use itertools::Itertools;
 
 pub fn read_stdin_to_string() -> io::Result<String> {
     let mut buffer = String::new();
@@ -48,6 +49,21 @@ pub fn read_regex_matches_from_string<'a>(s: &'a str, regex_pattern: &str) -> Ve
     re.find_iter(s)
         .map(|m| m.as_str())
         .collect()
+}
+
+pub fn split_to_tuple2<'a>(s: &'a str, pattern: &str) -> Option<(&'a str, &'a str)> {
+    let parts = s.splitn(2, pattern);
+    return parts.collect_tuple();
+}
+
+pub fn split_to_tuple3<'a>(s: &'a str, pattern: &str) -> Option<(&'a str, &'a str, &'a str)> {
+    let parts = s.splitn(3, pattern);
+    return parts.collect_tuple();
+}
+
+pub fn split_to_tuple4<'a>(s: &'a str, pattern: &str) -> Option<(&'a str, &'a str, &'a str, &'a str)> {
+    let parts = s.splitn(4, pattern);
+    return parts.collect_tuple();
 }
 
 
