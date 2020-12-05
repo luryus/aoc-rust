@@ -1,9 +1,9 @@
-use std::io::{Read, self};
-use std::iter::Iterator;
-use std::str::FromStr;
+use itertools::Itertools;
 use num_integer::Integer;
 use regex::Regex;
-use itertools::Itertools;
+use std::io::{self, Read};
+use std::iter::Iterator;
+use std::str::FromStr;
 
 pub fn read_stdin_to_string() -> io::Result<String> {
     let mut buffer = String::new();
@@ -13,13 +13,16 @@ pub fn read_stdin_to_string() -> io::Result<String> {
 
 pub fn read_stdin_lines() -> io::Result<Vec<String>> {
     let input = read_stdin_to_string()?;
-    Ok(input.lines().filter_map(|l| {
-        if l.is_empty() {
-            None
-        } else {
-            Some(l.to_owned())
-        }
-    }).collect())
+    Ok(input
+        .lines()
+        .filter_map(|l| {
+            if l.is_empty() {
+                None
+            } else {
+                Some(l.to_owned())
+            }
+        })
+        .collect())
 }
 
 pub fn read_ints_from_stdin<T: Integer + FromStr>() -> io::Result<Vec<T>> {
@@ -39,16 +42,17 @@ pub fn read_regex_matches_from_stdin(regex_pattern: &str) -> io::Result<Vec<Stri
     let s = read_stdin_to_string()?;
     let matches = read_regex_matches_from_string(&s, regex_pattern);
 
-    let res = matches.into_iter().map(|sm| sm.to_owned()).collect::<Vec<_>>();
+    let res = matches
+        .into_iter()
+        .map(|sm| sm.to_owned())
+        .collect::<Vec<_>>();
 
     Ok(res)
 }
 
 pub fn read_regex_matches_from_string<'a>(s: &'a str, regex_pattern: &str) -> Vec<&'a str> {
     let re = Regex::new(regex_pattern).unwrap();
-    re.find_iter(s)
-        .map(|m| m.as_str())
-        .collect()
+    re.find_iter(s).map(|m| m.as_str()).collect()
 }
 
 pub fn split_to_tuple2<'a>(s: &'a str, pattern: &str) -> Option<(&'a str, &'a str)> {
@@ -61,11 +65,13 @@ pub fn split_to_tuple3<'a>(s: &'a str, pattern: &str) -> Option<(&'a str, &'a st
     return parts.collect_tuple();
 }
 
-pub fn split_to_tuple4<'a>(s: &'a str, pattern: &str) -> Option<(&'a str, &'a str, &'a str, &'a str)> {
+pub fn split_to_tuple4<'a>(
+    s: &'a str,
+    pattern: &str,
+) -> Option<(&'a str, &'a str, &'a str, &'a str)> {
     let parts = s.splitn(4, pattern);
     return parts.collect_tuple();
 }
-
 
 #[test]
 fn test_read_ints_from_string() {

@@ -4,12 +4,12 @@ fn part1(input: &Vec<String>) -> Option<usize> {
     trees(input, 3, 1)
 }
 
-fn trees(input: &Vec<String>, dx: usize, dy: usize)  -> Option<usize> {
+fn trees(input: &Vec<String>, dx: usize, dy: usize) -> Option<usize> {
     let mut x = dx;
     let mut trees = 0;
     let w = input.get(0)?.len();
-        
-    for y in (dy..input.len()).step_by(dy)  {
+
+    for y in (dy..input.len()).step_by(dy) {
         if input[y].chars().nth(x)? == '#' {
             trees += 1;
         }
@@ -21,11 +21,11 @@ fn trees(input: &Vec<String>, dx: usize, dy: usize)  -> Option<usize> {
 }
 
 fn part2(input: &Vec<String>) -> Option<usize> {
-    let res = trees(input, 1, 1)? *
-        trees(input, 3, 1)? *
-        trees(input, 5, 1)? *
-        trees(input, 7, 1)? *
-        trees(input, 1, 2)?;
+    let res = trees(input, 1, 1)?
+        * trees(input, 3, 1)?
+        * trees(input, 5, 1)?
+        * trees(input, 7, 1)?
+        * trees(input, 1, 2)?;
 
     Some(res)
 }

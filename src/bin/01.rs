@@ -9,21 +9,22 @@ fn part1(input: &Vec<i32>) -> i32 {
     for i in 0..input.len() {
         for j in 0..input.len() {
             if input[i] + input[j] == 2020 {
-                return input[i] * input [j]
+                return input[i] * input[j];
             }
         }
     }
     unreachable!()
 }
 
-
 fn part2(input: &Vec<i32>) -> i32 {
     for i in 0..input.len() {
         for j in 0..input.len() {
-            if input[i] + input[j] > 2020 { continue }
+            if input[i] + input[j] > 2020 {
+                continue;
+            }
             for k in 0..input.len() {
                 if input[i] + input[j] + input[k] == 2020 {
-                    return input[i] * input [j] * input[k]
+                    return input[i] * input[j] * input[k];
                 }
             }
         }
