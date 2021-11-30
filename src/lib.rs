@@ -1,7 +1,7 @@
 use itertools::Itertools;
 use num_integer::Integer;
 use regex::Regex;
-use std::io::{self, Read};
+use std::{io::{self, Read}};
 use std::iter::Iterator;
 use std::str::FromStr;
 
@@ -89,4 +89,17 @@ fn test_read_regex_matches_from_string() {
 
     let m = read_regex_matches_from_string(s, re);
     assert_eq!(vec!["0.12", "1.23", "4.2", "111.1"], m);
+}
+
+pub trait UnwrapOptionIterator<T> {
+    type Output: Iterator<Item = T>;
+    fn unwrap_options(self) -> Self::Output;
+}
+
+impl<T, I: Iterator<Item = Option<T>>> UnwrapOptionIterator<T> for I {
+    type Output = std::iter::Map<Self, fn(Option<T>) -> T>;
+
+    fn unwrap_options(self) -> Self::Output {
+        self.map(|x| x.unwrap())
+    }
 }

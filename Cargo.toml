@@ -12,6 +12,7 @@ lazy_static = "1.4.0"
 regex = "1.4.2"
 num-integer = "0.1.44"
 num-complex = "0.3.1"
+pcre2 = "0.2.3"
 
 [dev-dependencies]
 "criterion" = "0.3"

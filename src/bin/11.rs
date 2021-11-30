@@ -104,18 +104,6 @@ fn part1(input: &Vec<Vec<char>>) -> usize {
         .sum::<usize>()
 }
 
-fn print_grid(prev_state: &Vec<Vec<char>>) -> () {
-    println!();
-    for y in 0..prev_state.len() {
-        for x in 0..prev_state[0].len() {
-            print!("{}", prev_state[y][x]);
-        }
-        println!();
-    }
-    println!();
-}
-
-
 fn part2(input: &Vec<Vec<char>>) -> usize {
     let mut prev_state = input.clone();
     let w = input[0].len();
