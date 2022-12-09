@@ -37,18 +37,12 @@ pub fn read_input_lines() -> io::Result<Vec<String>> {
 
 pub fn read_file_lines(filename: &str) -> io::Result<Vec<String>> {
     let input = std::fs::read_to_string(filename)?;
-    Ok(input
-        .lines()
-        .map(|l| l.to_owned())
-        .collect())
+    Ok(input.lines().map(|l| l.to_owned()).collect())
 }
 
 pub fn read_stdin_lines() -> io::Result<Vec<String>> {
     let input = read_stdin_to_string()?;
-    Ok(input
-        .lines()
-        .map(|l| l.to_owned())
-        .collect())
+    Ok(input.lines().map(|l| l.to_owned()).collect())
 }
 
 pub fn read_input_ints<T: Integer + FromStr>(signed: bool) -> io::Result<Vec<T>> {
@@ -124,7 +118,10 @@ pub fn read_input_char_matrix() -> io::Result<Array2<char>> {
 pub fn read_input_int_matrix<T: Integer + From<u32>>() -> io::Result<Array2<T>> {
     let cm = read_input_char_matrix()?;
     if !cm.iter().all(|&c| c.is_ascii_digit()) {
-        Err(std::io::Error::new(std::io::ErrorKind::InvalidData, "Matrix char not a digit"))
+        Err(std::io::Error::new(
+            std::io::ErrorKind::InvalidData,
+            "Matrix char not a digit",
+        ))
     } else {
         Ok(cm.map(|&c| c.to_digit(10).unwrap().into()))
     }
@@ -182,4 +179,60 @@ pub fn make_2d_array<T>(v: Vec<Vec<T>>) -> Option<Array2<T>> {
     let nrows = v.len();
 
     Array2::from_shape_vec((ncols, nrows), v.into_iter().flatten().collect_vec()).ok()
+}
+
+pub mod iter {
+    pub struct TakeUntilInclusive<I, P> {
+        inner: I,
+        predicate: P,
+        fired: bool,
+    }
+
+    impl<I, P> Iterator for TakeUntilInclusive<I, P>
+    where
+        I: Iterator,
+        P: Fn(&<I as Iterator>::Item) -> bool,
+    {
+        type Item = <I as Iterator>::Item;
+
+        fn next(&mut self) -> Option<Self::Item> {
+            if self.fired {
+                return None
+            }
+
+            if let Some(val) = self.inner.next() {
+                if (self.predicate)(&val) {
+                    self.fired = true;
+                }
+                return Some(val);
+            }
+            None
+        }
+    }
+
+    pub trait TakeUntilInclusiveExt: Iterator {
+        fn take_until_inclusive<P>(self, predicate: P) -> TakeUntilInclusive<Self, P>
+        where
+            P: Fn(&Self::Item) -> bool,
+            Self: Sized,
+        {
+            TakeUntilInclusive { inner: self, predicate, fired: false }
+        }
+    }
+
+    impl<I: Iterator> TakeUntilInclusiveExt for I {}
+
+    #[cfg(test)]
+    mod test {
+        use super::TakeUntilInclusiveExt;
+
+        #[test]
+        fn test_take_until_inclusive() {
+            let res: Vec<_> = (0..5).take_until_inclusive(|v| *v > 2).collect();
+            assert_eq!(vec![0, 1, 2, 3], res);
+
+            let res: Vec<_> = [0, 0, 1, 0, 0].into_iter().take_until_inclusive(|v| *v == 1).collect();
+            assert_eq!(vec![0, 0, 1], res);
+        }
+    }
 }

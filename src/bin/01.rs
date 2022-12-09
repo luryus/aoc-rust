@@ -20,7 +20,7 @@ fn part2(input: &[String]) -> usize {
 }
 
 fn main() -> io::Result<()> {
-    let input = aoc2021::read_input_lines()?;
+    let input = aoc2022::read_input_lines()?;
 
     let p1 = part1(&input);
     println!("Part 1: {}", p1);
