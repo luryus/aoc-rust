@@ -236,3 +236,16 @@ pub mod iter {
         }
     }
 }
+
+
+pub fn print_bool_matrix<T: Default + PartialEq>(mtx: &Vec<Vec<T>>) {
+    let def = T::default();
+    for r in mtx {
+        println!(
+            "{}",
+            r.iter()
+                .map(|c| if &def != c { '█' } else { '.' })
+                .collect::<String>()
+        );
+    }
+}

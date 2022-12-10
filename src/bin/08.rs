@@ -1,5 +1,4 @@
-use itertools::Itertools;
-use ndarray::{array, Array1, Array2, ArrayView1};
+use ndarray::{Array2, ArrayView1};
 use std::io;
 use aoc2022::iter::TakeUntilInclusiveExt;
 
