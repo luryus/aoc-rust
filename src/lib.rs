@@ -115,6 +115,15 @@ pub fn read_input_char_matrix() -> io::Result<Array2<char>> {
         .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))
 }
 
+pub fn read_input_byte_matrix() -> io::Result<Array2<u8>> {
+    let lines = read_input_lines()?;
+    let h = lines.len();
+    let w = lines[0].len();
+
+    Array2::from_shape_vec((h, w), lines.iter().flat_map(|l| l.bytes()).collect())
+        .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))
+}
+
 pub fn read_input_int_matrix<T: Integer + From<u32>>() -> io::Result<Array2<T>> {
     let cm = read_input_char_matrix()?;
     if !cm.iter().all(|&c| c.is_ascii_digit()) {
