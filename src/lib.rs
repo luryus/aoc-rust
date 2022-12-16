@@ -258,3 +258,16 @@ pub fn print_bool_matrix<T: Default + PartialEq>(mtx: &Vec<Vec<T>>) {
         );
     }
 }
+
+
+pub fn print_bool_ndarray<T: Default + PartialEq>(mtx: &Array2<T>) {
+    let def = T::default();
+    for r in mtx.rows() {
+        println!(
+            "{}",
+            r.iter()
+                .map(|c| if &def != c { '█' } else { '.' })
+                .collect::<String>()
+        );
+    }
+}
