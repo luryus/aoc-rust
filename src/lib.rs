@@ -1,5 +1,5 @@
 use itertools::Itertools;
-use ndarray::Array2;
+use ndarray::{Array2, ArrayView2};
 use num_integer::Integer;
 use regex::Regex;
 use std::io::{self, Read};
@@ -260,7 +260,7 @@ pub fn print_bool_matrix<T: Default + PartialEq>(mtx: &Vec<Vec<T>>) {
 }
 
 
-pub fn print_bool_ndarray<T: Default + PartialEq>(mtx: &Array2<T>) {
+pub fn print_bool_ndarray<T: Default + PartialEq>(mtx: ArrayView2<T>) {
     let def = T::default();
     for r in mtx.rows() {
         println!(
