@@ -1,4 +1,4 @@
-muse itertools::Itertools;
+use itertools::Itertools;
 use ndarray::Array3;
 use std::{
     collections::{HashSet, VecDeque},
