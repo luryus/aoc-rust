@@ -1,9 +1,9 @@
-use itertools::Itertools;
-use ndarray::{Array2, ArrayView2};
+use itertools::{Either, Itertools};
+use ndarray::{Array2, ArrayView2, ErrorKind};
 use num_integer::Integer;
 use regex::Regex;
 use std::io::{self, Read};
-use std::iter::Iterator;
+use std::iter::{repeat, Iterator};
 use std::str::FromStr;
 
 pub fn get_input_filename() -> Option<String> {
@@ -115,6 +115,30 @@ pub fn read_input_char_matrix() -> io::Result<Array2<char>> {
         .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))
 }
 
+pub fn read_string_char_matrix(str: &str) -> io::Result<Array2<char>> {
+    let lines: Vec<_> = str.lines().collect();
+    let h = lines.len();
+    let w = lines.iter().map(|l| l.len()).max().unwrap();
+
+    Array2::from_shape_vec(
+        (h, w),
+        lines
+            .iter()
+            .flat_map(|l| {
+                if l.len() < w {
+                    Either::Left(
+                        l.chars()
+                            .chain(repeat(Default::default()).take(w - l.len())),
+                    )
+                } else {
+                    Either::Right(l.chars())
+                }
+            })
+            .collect(),
+    )
+    .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))
+}
+
 pub fn read_input_byte_matrix() -> io::Result<Array2<u8>> {
     let lines = read_input_lines()?;
     let h = lines.len();
@@ -206,7 +230,7 @@ pub mod iter {
 
         fn next(&mut self) -> Option<Self::Item> {
             if self.fired {
-                return None
+                return None;
             }
 
             if let Some(val) = self.inner.next() {
@@ -225,7 +249,11 @@ pub mod iter {
             P: Fn(&Self::Item) -> bool,
             Self: Sized,
         {
-            TakeUntilInclusive { inner: self, predicate, fired: false }
+            TakeUntilInclusive {
+                inner: self,
+                predicate,
+                fired: false,
+            }
         }
     }
 
@@ -240,12 +268,14 @@ pub mod iter {
             let res: Vec<_> = (0..5).take_until_inclusive(|v| *v > 2).collect();
             assert_eq!(vec![0, 1, 2, 3], res);
 
-            let res: Vec<_> = [0, 0, 1, 0, 0].into_iter().take_until_inclusive(|v| *v == 1).collect();
+            let res: Vec<_> = [0, 0, 1, 0, 0]
+                .into_iter()
+                .take_until_inclusive(|v| *v == 1)
+                .collect();
             assert_eq!(vec![0, 0, 1], res);
         }
     }
 }
-
 
 pub fn print_bool_matrix<T: Default + PartialEq>(mtx: &Vec<Vec<T>>) {
     let def = T::default();
@@ -259,7 +289,6 @@ pub fn print_bool_matrix<T: Default + PartialEq>(mtx: &Vec<Vec<T>>) {
     }
 }
 
-
 pub fn print_bool_ndarray<T: Default + PartialEq>(mtx: ArrayView2<T>) {
     let def = T::default();
     for r in mtx.rows() {
@@ -269,5 +298,11 @@ pub fn print_bool_ndarray<T: Default + PartialEq>(mtx: ArrayView2<T>) {
                 .map(|c| if &def != c { '█' } else { '.' })
                 .collect::<String>()
         );
+    }
+}
+
+pub fn print_char_ndarray(mtx: ArrayView2<char>) {
+    for r in mtx.rows() {
+        println!("{}", r.iter().collect::<String>());
     }
 }
