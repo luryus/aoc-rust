@@ -1,5 +1,5 @@
 use itertools::{Either, Itertools};
-use ndarray::{Array2, ArrayView2, ErrorKind};
+use ndarray::{Array2, ArrayView2};
 use num_integer::Integer;
 use regex::Regex;
 use std::io::{self, Read};
