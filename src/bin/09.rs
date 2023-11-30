@@ -39,8 +39,8 @@ fn part1(input: &Vec<(char, u8)>) -> usize {
 }
 
 fn part2(input: &Vec<(char, u8)>) -> usize {
-    let mut xs = vec![0; 10];
-    let mut ys = vec![0; 10];
+    let mut xs = [0; 10];
+    let mut ys = [0; 10];
 
     let mut tail_visited = HashSet::new();
     tail_visited.insert((0, 0));
