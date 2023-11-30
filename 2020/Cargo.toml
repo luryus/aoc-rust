@@ -1,0 +1,22 @@
+[package]
+name = "aoc2020"
+version = "0.1.0"
+authors = ["Lauri Koskela <lapamiko@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+itertools = "0.9.0"
+lazy_static = "1.4.0"
+regex = "1.4.2"
+num-integer = "0.1.44"
+num-complex = "0.3.1"
+pcre2 = "0.2.3"
+
+[dev-dependencies]
+"criterion" = "0.3"
+
+[[bench]]
+name = "06"
+harness = false
