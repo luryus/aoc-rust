@@ -214,6 +214,37 @@ pub fn make_2d_array<T>(v: Vec<Vec<T>>) -> Option<Array2<T>> {
     Array2::from_shape_vec((ncols, nrows), v.into_iter().flatten().collect_vec()).ok()
 }
 
+pub fn print_bool_matrix<T: Default + PartialEq>(mtx: &Vec<Vec<T>>) {
+    let def = T::default();
+    for r in mtx {
+        println!(
+            "{}",
+            r.iter()
+                .map(|c| if &def != c { '█' } else { '.' })
+                .collect::<String>()
+        );
+    }
+}
+
+pub fn print_bool_ndarray<T: Default + PartialEq>(mtx: ArrayView2<T>) {
+    let def = T::default();
+    for r in mtx.rows() {
+        println!(
+            "{}",
+            r.iter()
+                .map(|c| if &def != c { '█' } else { '.' })
+                .collect::<String>()
+        );
+    }
+}
+
+pub fn print_char_ndarray(mtx: ArrayView2<char>) {
+    for r in mtx.rows() {
+        println!("{}", r.iter().collect::<String>());
+    }
+}
+
+
 pub mod iter {
     pub struct TakeUntilInclusive<I, P> {
         inner: I,
@@ -277,32 +308,3 @@ pub mod iter {
     }
 }
 
-pub fn print_bool_matrix<T: Default + PartialEq>(mtx: &Vec<Vec<T>>) {
-    let def = T::default();
-    for r in mtx {
-        println!(
-            "{}",
-            r.iter()
-                .map(|c| if &def != c { '█' } else { '.' })
-                .collect::<String>()
-        );
-    }
-}
-
-pub fn print_bool_ndarray<T: Default + PartialEq>(mtx: ArrayView2<T>) {
-    let def = T::default();
-    for r in mtx.rows() {
-        println!(
-            "{}",
-            r.iter()
-                .map(|c| if &def != c { '█' } else { '.' })
-                .collect::<String>()
-        );
-    }
-}
-
-pub fn print_char_ndarray(mtx: ArrayView2<char>) {
-    for r in mtx.rows() {
-        println!("{}", r.iter().collect::<String>());
-    }
-}
