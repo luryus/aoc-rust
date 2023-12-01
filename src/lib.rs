@@ -8,8 +8,8 @@ use std::str::FromStr;
 pub fn get_input_filename() -> Option<String> {
     let args: Vec<_> = std::env::args().collect();
     match args.len() {
-        1 => args.into_iter().nth(1),
-        0 => None,
+        2 => args.into_iter().nth(1),
+        1 => None,
         _ => panic!("Invalid number of arguments ({})", args.len() - 1),
     }
 }
