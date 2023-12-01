@@ -179,7 +179,7 @@ fn part2(input: &[Blueprint]) -> usize {
 fn parse_input(input: Vec<String>) -> Vec<Blueprint> {
     input
         .into_iter()
-        .map(|l| aoc2022::read_ints_from_string(&l, false))
+        .map(|l| aoclib::read_ints_from_string(&l, false))
         .map(|nums| {
             assert_eq!(7, nums.len());
             Blueprint {
@@ -194,7 +194,7 @@ fn parse_input(input: Vec<String>) -> Vec<Blueprint> {
 }
 
 fn main() -> io::Result<()> {
-    let input = parse_input(aoc2022::read_input_lines()?);
+    let input = parse_input(aoclib::read_input_lines()?);
 
     let p1 = part1(&input);
     println!("Part 1: {}", p1);
@@ -203,4 +203,20 @@ fn main() -> io::Result<()> {
     println!("Part 2: {}", p2);
 
     Ok(())
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_real_input() {
+        let input = aoclib::read_file_lines(aoclib::get_test_input_file!(19)).unwrap();
+        let input = parse_input(input);
+
+        let p1 = part1(&input);
+        assert_eq!(p1, 1266);
+
+        let p2 = part2(&input);
+        assert_eq!(p2, 5800);
+    }
 }

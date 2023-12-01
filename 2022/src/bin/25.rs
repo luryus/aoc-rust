@@ -91,10 +91,22 @@ fn part1(input: &[String]) -> String {
 }
 
 fn main() -> io::Result<()> {
-    let input = aoc2022::read_input_lines()?;
+    let input = aoclib::read_input_lines()?;
 
     let p1 = part1(&input);
     println!("Part 1: {}", p1);
 
     Ok(())
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_real_input() {
+        let input = aoclib::read_file_lines(aoclib::get_test_input_file!(25)).unwrap();
+
+        let p1 = part1(&input);
+        assert_eq!(p1, "2-0==21--=0==2201==2");
+    }
 }

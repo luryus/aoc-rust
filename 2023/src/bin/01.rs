@@ -1,5 +1,4 @@
 use lazy_static::lazy_static;
-use nom::AsChar;
 use regex::Regex;
 use std::{collections::HashMap, io};
 
@@ -26,12 +25,7 @@ lazy_static! {
 fn part1(input: &[String]) -> u32 {
     input
         .iter()
-        .map(|l| {
-            l.chars()
-                .filter(|c| c.is_dec_digit())
-                .map(|c| c.to_digit(10).unwrap())
-                .collect::<Vec<_>>()
-        })
+        .map(|l| l.chars().filter_map(|c| c.to_digit(10)).collect::<Vec<_>>())
         .map(|l| l.first().unwrap() * 10 + l.last().unwrap())
         .sum()
 }
@@ -65,7 +59,7 @@ fn part2(input: &[String]) -> u32 {
 }
 
 fn main() -> io::Result<()> {
-    let input = aoc2023::read_input_lines()?;
+    let input = aoclib::read_input_lines()?;
 
     let p1 = part1(&input);
     println!("Part 1: {}", p1);
@@ -74,4 +68,19 @@ fn main() -> io::Result<()> {
     println!("Part 2: {}", p2);
 
     Ok(())
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_real_input() {
+        let input = aoclib::read_file_lines(aoclib::get_test_input_file!(1)).unwrap();
+
+        let p1 = part1(&input);
+        assert_eq!(p1, 56049);
+
+        let p2 = part2(&input);
+        assert_eq!(p2, 54530);
+    }
 }

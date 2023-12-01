@@ -5,7 +5,11 @@ fn part1(input: &HashMap<String, Monkey>) -> usize {
 }
 
 fn part2(input: &HashMap<String, Monkey>) -> usize {
-    fn walk<'a>(path: &[&'a str], current: &'a String, input: &'a HashMap<String, Monkey>) -> Option<Vec<&'a str>> {
+    fn walk<'a>(
+        path: &[&'a str],
+        current: &'a String,
+        input: &'a HashMap<String, Monkey>,
+    ) -> Option<Vec<&'a str>> {
         let m = input.get(current).unwrap();
         let mut path = path.to_owned();
         path.push(current);
@@ -14,22 +18,28 @@ fn part2(input: &HashMap<String, Monkey>) -> usize {
             Some(path)
         } else {
             match m {
-                Monkey::Plus(l, r) | Monkey::Div(l, r) | Monkey::Minus(l, r) | Monkey::Times(l, r) => {
-                    walk(&path, l, input).or_else(|| walk(&path, r, input))
-                },
-                _ => None
+                Monkey::Plus(l, r)
+                | Monkey::Div(l, r)
+                | Monkey::Minus(l, r)
+                | Monkey::Times(l, r) => walk(&path, l, input).or_else(|| walk(&path, r, input)),
+                _ => None,
             }
         }
     }
 
-    fn find_res(path: &[&str], current: &String, expected: usize, input: &HashMap<String, Monkey>) -> usize {
+    fn find_res(
+        path: &[&str],
+        current: &String,
+        expected: usize,
+        input: &HashMap<String, Monkey>,
+    ) -> usize {
         let m = &input[current];
         if current == "humn" {
             return expected;
         }
         match m {
             Monkey::Literal(lit) => *lit,
-            Monkey::Plus(l, r) => { 
+            Monkey::Plus(l, r) => {
                 if l == path[1] {
                     let exp = expected - get_monkey_val(r, input);
                     find_res(&path[1..], l, exp, input)
@@ -37,8 +47,8 @@ fn part2(input: &HashMap<String, Monkey>) -> usize {
                     let exp = expected - get_monkey_val(l, input);
                     find_res(&path[1..], r, exp, input)
                 }
-            },
-            Monkey::Minus(l, r) => { 
+            }
+            Monkey::Minus(l, r) => {
                 if l == path[1] {
                     let exp = expected + get_monkey_val(r, input);
                     find_res(&path[1..], l, exp, input)
@@ -46,8 +56,8 @@ fn part2(input: &HashMap<String, Monkey>) -> usize {
                     let exp = get_monkey_val(l, input) - expected;
                     find_res(&path[1..], r, exp, input)
                 }
-            },
-            Monkey::Times(l, r) => { 
+            }
+            Monkey::Times(l, r) => {
                 if l == path[1] {
                     let exp = expected / get_monkey_val(r, input);
                     find_res(&path[1..], l, exp, input)
@@ -55,8 +65,8 @@ fn part2(input: &HashMap<String, Monkey>) -> usize {
                     let exp = expected / get_monkey_val(l, input);
                     find_res(&path[1..], r, exp, input)
                 }
-            },
-            Monkey::Div(l, r) => { 
+            }
+            Monkey::Div(l, r) => {
                 if l == path[1] {
                     let exp = expected * get_monkey_val(r, input);
                     find_res(&path[1..], l, exp, input)
@@ -64,7 +74,7 @@ fn part2(input: &HashMap<String, Monkey>) -> usize {
                     let exp = get_monkey_val(l, input) / expected;
                     find_res(&path[1..], r, exp, input)
                 }
-            },
+            }
         }
     }
 
@@ -79,11 +89,16 @@ fn part2(input: &HashMap<String, Monkey>) -> usize {
             } else {
                 get_monkey_val(l, input)
             }
-        },
+        }
         Monkey::Literal(_) => panic!(),
     };
 
-    find_res(&human_path[1..], &human_path[1].to_string(), known_side_res, input)
+    find_res(
+        &human_path[1..],
+        &human_path[1].to_string(),
+        known_side_res,
+        input,
+    )
 }
 
 #[derive(Debug)]
@@ -138,7 +153,7 @@ fn parse_input(lines: Vec<String>) -> HashMap<String, Monkey> {
 }
 
 fn main() -> io::Result<()> {
-    let input = parse_input(aoc2022::read_input_lines()?);
+    let input = parse_input(aoclib::read_input_lines()?);
 
     let p1 = part1(&input);
     println!("Part 1: {}", p1);
@@ -147,4 +162,20 @@ fn main() -> io::Result<()> {
     println!("Part 2: {}", p2);
 
     Ok(())
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_real_input() {
+        let input = aoclib::read_file_lines(aoclib::get_test_input_file!(21)).unwrap();
+        let input = parse_input(input);
+
+        let p1 = part1(&input);
+        assert_eq!(p1, 155708040358220);
+
+        let p2 = part2(&input);
+        assert_eq!(p2, 3342154812537);
+    }
 }

@@ -1,6 +1,6 @@
 use std::io;
 
-fn run(input: Vec<Instruction>) {
+fn run(input: Vec<Instruction>) -> (i32, Vec<Vec<bool>>) {
     let mut inp_iter = input.iter();
     let mut current_op = None;
     let mut x = 1i32;
@@ -34,11 +34,13 @@ fn run(input: Vec<Instruction>) {
     println!("Part 1: {res}");
 
     println!("Part 2:");
-    aoc2022::print_bool_matrix(&disp);
+    aoclib::print_bool_matrix(&disp);
+
+    (res, disp)
 }
 
 fn main() -> io::Result<()> {
-    let input = aoc2022::read_input_lines()?;
+    let input = aoclib::read_input_lines()?;
     let input = parse_input(input);
 
     run(input);
@@ -66,4 +68,25 @@ fn parse_input(input: Vec<String>) -> Vec<Instruction> {
             panic!("Unknown instruction {l}")
         })
         .collect()
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_real_input() {
+        let input = aoclib::read_file_lines(aoclib::get_test_input_file!(10)).unwrap();
+        let input = parse_input(input);
+
+        let (p1, p2) = run(input);
+        assert_eq!(p1, 13760);
+
+        let p2_bin = p2
+            .into_iter()
+            .flatten()
+            .map(|b| if b { '1' } else { '0' })
+            .collect::<String>();
+
+        assert_eq!(p2_bin, "111001111010010111100110011100111101111010010100001010000010100101001010000100001001011100110000010010000100101110011100111001000010100010001000011100100001000010100100001010010000100101000010000100001001010000100101111001100100001111010000");
+    }
 }

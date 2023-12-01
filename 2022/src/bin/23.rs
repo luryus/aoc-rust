@@ -146,7 +146,7 @@ fn parse_input(input: Array2<char>) -> Vec<Coord> {
 }
 
 fn main() -> io::Result<()> {
-    let input = parse_input(aoc2022::read_input_char_matrix()?);
+    let input = parse_input(aoclib::read_input_char_matrix()?);
 
     let p1 = part1(&input);
     println!("Part 1: {}", p1);
@@ -155,4 +155,20 @@ fn main() -> io::Result<()> {
     println!("Part 2: {}", p2);
 
     Ok(())
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_real_input() {
+        let input = aoclib::read_file_char_matrix(aoclib::get_test_input_file!(23)).unwrap();
+        let input = parse_input(input);
+
+        let p1 = part1(&input);
+        assert_eq!(p1, 4091);
+
+        let p2 = part2(&input);
+        assert_eq!(p2, 1036);
+    }
 }

@@ -80,7 +80,7 @@ fn part2(input: &Vec<Coord>) -> usize {
             for n in neihgs {
                 if grid[n] == 1 {
                     grid[c] = 2;
-                } else  if !visited.contains(&n) && !q.contains(&n) {
+                } else if !visited.contains(&n) && !q.contains(&n) {
                     q.push_back(n);
                 }
             }
@@ -99,7 +99,7 @@ fn part2(input: &Vec<Coord>) -> usize {
 }
 
 fn main() -> io::Result<()> {
-    let input = aoc2022::read_input_lines()?;
+    let input = aoclib::read_input_lines()?;
     let input: Vec<Coord> = input
         .into_iter()
         .map(|l| {
@@ -117,4 +117,28 @@ fn main() -> io::Result<()> {
     println!("Part 2: {}", p2);
 
     Ok(())
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_real_input() {
+        let input = aoclib::read_file_lines(aoclib::get_test_input_file!(18)).unwrap();
+        let input: Vec<Coord> = input
+            .into_iter()
+            .map(|l| {
+                l.split(',')
+                    .filter_map(|n| n.parse::<usize>().ok())
+                    .collect_tuple()
+                    .unwrap()
+            })
+            .collect();
+
+        let p1 = part1(&input);
+        assert_eq!(p1, 3526);
+
+        let p2 = part2(&input);
+        assert_eq!(p2, 2090);
+    }
 }

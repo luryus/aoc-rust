@@ -6,14 +6,10 @@ edition = "2021"
 
 
 [dependencies]
-md5 = "0.7.0"
+aoclib = { path = "../aoclib" }
 regex = "1.5.4"
 lazy_static = "1.4.0"
 itertools = "0.12"
 num-integer = "0.1.44"
 ndarray = "0.15.4"
 anyhow = "1.0.66"
-nom = "7.1.1"
-arrayvec = "0.7.2"
-bit-set = "0.5.3"
-lru = "0.12"

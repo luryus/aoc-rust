@@ -71,7 +71,8 @@ fn empty_ranges(row: i32, input: &[Sensor]) -> ArrayVec<RangeInclusive<i32>, MAX
             if l.end() >= r.start() {
                 new_ranges.push(*l.start()..=*(l.end().max(r.end())));
             } else {
-                new_ranges.push(*r.start()..=*r.end());
+                new_ranges.push(l);
+                new_ranges.push(r.clone());
             }
         }
 
@@ -114,7 +115,7 @@ fn parse_input(input: Vec<String>) -> ArrayVec<Sensor, MAX_SENSORS> {
     input
         .into_iter()
         .filter_map(|l| {
-            aoc2022::read_ints_from_string(&l, true)
+            aoclib::read_ints_from_string(&l, true)
                 .into_iter()
                 .collect_tuple()
         })
@@ -131,7 +132,7 @@ fn parse_input(input: Vec<String>) -> ArrayVec<Sensor, MAX_SENSORS> {
 fn main() -> io::Result<()> {
     let test_mode = std::env::var("TEST_MODE").is_ok();
 
-    let input = aoc2022::read_input_lines()?;
+    let input = aoclib::read_input_lines()?;
     let input = parse_input(input);
 
     let p1 = part1(&input, test_mode);
@@ -141,4 +142,20 @@ fn main() -> io::Result<()> {
     println!("Part 2: {}", p2);
 
     Ok(())
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_real_input() {
+        let input = aoclib::read_file_lines(aoclib::get_test_input_file!(15)).unwrap();
+        let input = parse_input(input);
+
+        let p1 = part1(&input, false);
+        assert_eq!(p1, 5688618);
+
+        let p2 = part2(&input, false);
+        assert_eq!(p2, 12625383204261);
+    }
 }

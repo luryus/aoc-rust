@@ -17,7 +17,6 @@ fn adjacents(x: usize, y: usize, w: usize, h: usize) -> impl Iterator<Item = Coo
     .flatten()
 }
 
-
 fn run(input: &Array2<u8>, start: Coord, target: Coord) -> Option<usize> {
     let mut q = VecDeque::new();
     let mut visited = HashSet::new();
@@ -47,17 +46,25 @@ fn part1(input: &Array2<u8>, start: Coord, target: Coord) -> usize {
 }
 
 fn part2(input: &Array2<u8>, target: Coord) -> usize {
-    input.indexed_iter().filter(|(_c, h)| h == &&b'a')
+    input
+        .indexed_iter()
+        .filter(|(_c, h)| h == &&b'a')
         .filter_map(|(start, _)| run(input, start, target))
         .min()
         .expect("No routes found?")
 }
 
 fn main() -> io::Result<()> {
-    let mut input = aoc2022::read_input_byte_matrix()?;
-    let (start, sh) = input.indexed_iter_mut().find(|(_c, el)| el == &&b'S').unwrap();
+    let mut input = aoclib::read_input_byte_matrix()?;
+    let (start, sh) = input
+        .indexed_iter_mut()
+        .find(|(_c, el)| el == &&b'S')
+        .unwrap();
     *sh = b'a';
-    let (target, th) = input.indexed_iter_mut().find(|(_c, el)| el == &&b'E').unwrap();
+    let (target, th) = input
+        .indexed_iter_mut()
+        .find(|(_c, el)| el == &&b'E')
+        .unwrap();
     *th = b'z';
 
     let p1 = part1(&input, start, target);
@@ -67,4 +74,30 @@ fn main() -> io::Result<()> {
     println!("Part 2: {}", p2);
 
     Ok(())
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_real_input() {
+        let mut input = aoclib::read_file_byte_matrix(aoclib::get_test_input_file!(12)).unwrap();
+
+        let (start, sh) = input
+            .indexed_iter_mut()
+            .find(|(_c, el)| el == &&b'S')
+            .unwrap();
+        *sh = b'a';
+        let (target, th) = input
+            .indexed_iter_mut()
+            .find(|(_c, el)| el == &&b'E')
+            .unwrap();
+        *th = b'z';
+
+        let p1 = part1(&input, start, target);
+        assert_eq!(p1, 391);
+
+        let p2 = part2(&input, target);
+        assert_eq!(p2, 386);
+    }
 }
