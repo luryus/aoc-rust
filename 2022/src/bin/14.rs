@@ -1,5 +1,5 @@
 use itertools::Itertools;
-use ndarray::{s, Array2, Array1};
+use ndarray::{s, Array1, Array2};
 use std::io;
 
 type Coord = (usize, usize);
@@ -9,7 +9,7 @@ const POUR_POINT: Coord = (0, 500);
 fn part2(mut input: Array2<u8>) -> usize {
     let (h, mut w) = input.dim();
     input.push_row(Array1::zeros(w).view()).unwrap();
-    let h = h +1;
+    let h = h + 1;
 
     for i in 0.. {
         let mut sand = POUR_POINT;
@@ -129,8 +129,13 @@ fn main() -> io::Result<()> {
 }
 
 pub fn print_map(mtx: &Array2<u8>) {
-    let minx = mtx.columns().into_iter().enumerate()
-        .find(|(_, c)| c.sum() > 0).unwrap().0;
+    let minx = mtx
+        .columns()
+        .into_iter()
+        .enumerate()
+        .find(|(_, c)| c.sum() > 0)
+        .unwrap()
+        .0;
     let view = mtx.slice(s![.., minx..]);
 
     for r in view.rows() {
@@ -140,9 +145,26 @@ pub fn print_map(mtx: &Array2<u8>) {
                 .map(|c| match c {
                     1 => '█',
                     2 => 'o',
-                    _ => '.'
+                    _ => '.',
                 })
                 .collect::<String>()
         );
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_real_input() {
+        let input = aoclib::read_file_lines(aoclib::get_test_input_file!(14)).unwrap();
+
+        let input = parse_input(input);
+
+        let p1 = part1(input.clone());
+        assert_eq!(p1, 888);
+
+        let p2 = part2(input);
+        assert_eq!(p2, 26461);
     }
 }

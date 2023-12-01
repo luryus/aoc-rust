@@ -76,7 +76,14 @@ fn reward_with_elephant(
         .map(|n| (n, dmtx[(pos.into(), n)]));
 
     let mut max_reward = minutes_remaining * current_flow_rate
-        + reward(26, start_pos, BitSet::new(), remaining_valves.clone(), nodes, dmtx);
+        + reward(
+            26,
+            start_pos,
+            BitSet::new(),
+            remaining_valves.clone(),
+            nodes,
+            dmtx,
+        );
     for (v, d) in rem_valve_distances {
         if d == usize::MAX || (d + 1) >= minutes_remaining {
             continue;
@@ -234,4 +241,21 @@ fn parse_input(input: Vec<String>) -> (HashMap<u8, Node>, DistanceMatrix, u8) {
     }
 
     (nodes, dmtx, str_to_num_id["AA"])
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_real_input() {
+        let input = aoclib::read_file_lines(aoclib::get_test_input_file!(16)).unwrap();
+
+        let (nodes, dmtx, start) = parse_input(input);
+
+        let p1 = part1(&nodes, &dmtx, start);
+        assert_eq!(p1, 1595);
+
+        let p2 = part2(&nodes, &dmtx, start);
+        assert_eq!(p2, 2189);
+    }
 }

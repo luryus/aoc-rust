@@ -115,6 +115,15 @@ pub fn read_input_char_matrix() -> io::Result<Array2<char>> {
         .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))
 }
 
+pub fn read_file_char_matrix(filename: &str) -> io::Result<Array2<char>> {
+    let lines = read_file_lines(filename)?;
+    let h = lines.len();
+    let w = lines[0].len();
+
+    Array2::from_shape_vec((h, w), lines.iter().flat_map(|l| l.chars()).collect())
+        .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))
+}
+
 pub fn read_string_char_matrix(str: &str) -> io::Result<Array2<char>> {
     let lines: Vec<_> = str.lines().collect();
     let h = lines.len();
@@ -148,8 +157,29 @@ pub fn read_input_byte_matrix() -> io::Result<Array2<u8>> {
         .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))
 }
 
+pub fn read_file_byte_matrix(filename: &str) -> io::Result<Array2<u8>> {
+    let lines = read_file_lines(filename)?;
+    let h = lines.len();
+    let w = lines[0].len();
+
+    Array2::from_shape_vec((h, w), lines.iter().flat_map(|l| l.bytes()).collect())
+        .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))
+}
+
 pub fn read_input_int_matrix<T: Integer + From<u32>>() -> io::Result<Array2<T>> {
     let cm = read_input_char_matrix()?;
+    if !cm.iter().all(|&c| c.is_ascii_digit()) {
+        Err(std::io::Error::new(
+            std::io::ErrorKind::InvalidData,
+            "Matrix char not a digit",
+        ))
+    } else {
+        Ok(cm.map(|&c| c.to_digit(10).unwrap().into()))
+    }
+}
+
+pub fn read_file_int_matrix<T: Integer + From<u32>>(filename: &str) -> io::Result<Array2<T>> {
+    let cm = read_file_char_matrix(filename)?;
     if !cm.iter().all(|&c| c.is_ascii_digit()) {
         Err(std::io::Error::new(
             std::io::ErrorKind::InvalidData,
@@ -244,6 +274,18 @@ pub fn print_char_ndarray(mtx: ArrayView2<char>) {
     }
 }
 
+#[macro_export]
+macro_rules! get_test_input_file {
+    ($n:expr) => {
+        std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("src")
+            .join("bin")
+            .join("inputs")
+            .join(format!("{:02}.txt", $n))
+            .to_str()
+            .unwrap()
+    };
+}
 
 pub mod iter {
     pub struct TakeUntilInclusive<I, P> {
@@ -307,4 +349,3 @@ pub mod iter {
         }
     }
 }
-

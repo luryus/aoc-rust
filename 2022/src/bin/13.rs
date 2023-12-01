@@ -17,28 +17,27 @@ enum Item {
 
 impl Ord for Item {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        self.partial_cmp(other).unwrap()
+        match (self, other) {
+            (Item::Number(s), Item::Number(o)) => s.cmp(o),
+            (s @ Item::List(_), o @ Item::Number(_)) => s.cmp(&Item::List(vec![o.clone()])),
+            (s @ Item::Number(_), o @ Item::List(_)) => Item::List(vec![s.clone()]).cmp(o),
+            (Item::List(s), Item::List(o)) => s
+                .iter()
+                .zip_longest(o.iter())
+                .filter_map(|p| match p {
+                    itertools::EitherOrBoth::Both(l, r) => l.partial_cmp(r),
+                    itertools::EitherOrBoth::Left(_) => Some(std::cmp::Ordering::Greater),
+                    itertools::EitherOrBoth::Right(_) => Some(std::cmp::Ordering::Less),
+                })
+                .find(|c| !c.is_eq())
+                .unwrap_or(std::cmp::Ordering::Equal),
+        }
     }
 }
 
 impl PartialOrd for Item {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        match (self, other) {
-            (Item::Number(s), Item::Number(o)) => Some(s.cmp(o)),
-            (s @ Item::List(_), o @ Item::Number(_)) => s.partial_cmp(&Item::List(vec![o.clone()])),
-            (s @ Item::Number(_), o @ Item::List(_)) => Item::List(vec![s.clone()]).partial_cmp(o),
-            (Item::List(s), Item::List(o)) => Some(
-                s.iter()
-                    .zip_longest(o.iter())
-                    .filter_map(|p| match p {
-                        itertools::EitherOrBoth::Both(l, r) => l.partial_cmp(r),
-                        itertools::EitherOrBoth::Left(_) => Some(std::cmp::Ordering::Greater),
-                        itertools::EitherOrBoth::Right(_) => Some(std::cmp::Ordering::Less),
-                    })
-                    .find(|c| !c.is_eq())
-                    .unwrap_or(std::cmp::Ordering::Equal),
-            ),
-        }
+        Some(self.cmp(other))
     }
 }
 
@@ -107,4 +106,20 @@ fn main() -> io::Result<()> {
     println!("Part 2: {}", p2);
 
     Ok(())
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_real_input() {
+        let input = std::fs::read_to_string(aoclib::get_test_input_file!(13)).unwrap();
+        let input = parse_input(&input);
+
+        let p1 = part1(&input);
+        assert_eq!(p1, 5905);
+
+        let p2 = part2(input);
+        assert_eq!(p2, 21691);
+    }
 }

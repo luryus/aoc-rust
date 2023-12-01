@@ -33,3 +33,18 @@ fn main() -> io::Result<()> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_real_input() {
+        let input = aoclib::read_ints_from_file(aoclib::get_test_input_file!(20), true).unwrap();
+
+        let p1 = run(&input, 1, 1);
+        assert_eq!(p1, 13967);
+
+        let p2 = run(&input, 10, 811589153);
+        assert_eq!(p2, 1790365671518);
+    }
+}

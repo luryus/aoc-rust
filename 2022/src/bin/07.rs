@@ -124,3 +124,21 @@ fn main() -> io::Result<()> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_real_input() {
+        let input = aoclib::read_file_lines(aoclib::get_test_input_file!(7)).unwrap();
+
+        let root = parse_input(input);
+        let dir_sizes = walk_dirs(&root);
+
+        let p1 = part1(dir_sizes.clone());
+        assert_eq!(p1, 1443806);
+
+        let p2 = part2(dir_sizes);
+        assert_eq!(p2, 942298);
+    }
+}

@@ -55,3 +55,18 @@ fn main() -> io::Result<()> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_real_input() {
+        let input = aoclib::read_file_lines(aoclib::get_test_input_file!(4)).unwrap();
+
+        let p1 = part1(&input);
+        assert_eq!(p1, 466);
+
+        let p2 = part2(&input);
+        assert_eq!(p2, 865);
+    }
+}

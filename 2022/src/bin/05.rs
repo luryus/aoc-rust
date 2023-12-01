@@ -1,5 +1,5 @@
-use std::io;
 use itertools::Itertools;
+use std::io;
 
 #[repr(transparent)]
 #[derive(Clone, Copy)]
@@ -8,18 +8,23 @@ type Stack = Vec<Crate>;
 struct Step(usize, usize, usize);
 
 fn parse_input(input: &[String]) -> (Vec<Stack>, Vec<Step>) {
-
-    let rows: Vec<_> = input.iter().take_while(|l| !l.is_empty())
+    let rows: Vec<_> = input
+        .iter()
+        .take_while(|l| !l.is_empty())
         .map(|l| {
             let chunks = l.chars().chunks(4);
-            chunks.into_iter().map(|c| {
-                let (s, cr) = c.take(2).collect_tuple().unwrap();
-                match s {
-                    '[' => Some(Crate(cr)),
-                    _ => None
-                }
-            }).collect::<Vec<_>>()
-        }).collect();
+            chunks
+                .into_iter()
+                .map(|c| {
+                    let (s, cr) = c.take(2).collect_tuple().unwrap();
+                    match s {
+                        '[' => Some(Crate(cr)),
+                        _ => None,
+                    }
+                })
+                .collect::<Vec<_>>()
+        })
+        .collect();
 
     let mut stacks: Vec<Stack> = vec![vec![]; rows[0].len()];
 
@@ -31,7 +36,9 @@ fn parse_input(input: &[String]) -> (Vec<Stack>, Vec<Step>) {
         }
     }
 
-    let steps = input.iter().skip_while(|l| !l.is_empty())
+    let steps = input
+        .iter()
+        .skip_while(|l| !l.is_empty())
         .skip(1)
         .map(|l| aoclib::read_ints_from_string(l, false))
         .map(|l| Step(l[0], l[1], l[2]))
@@ -51,9 +58,11 @@ fn part1(input: &[String]) -> String {
         }
     }
 
-    stacks.into_iter().map(|s| s.last().expect("Stack was empty").0).collect()
+    stacks
+        .into_iter()
+        .map(|s| s.last().expect("Stack was empty").0)
+        .collect()
 }
-
 
 fn part2(input: &[String]) -> String {
     let (mut stacks, steps) = parse_input(input);
@@ -65,7 +74,10 @@ fn part2(input: &[String]) -> String {
         stacks[to - 1].extend(mov);
     }
 
-    stacks.into_iter().map(|s| s.last().expect("Stack was empty").0).collect()
+    stacks
+        .into_iter()
+        .map(|s| s.last().expect("Stack was empty").0)
+        .collect()
 }
 
 fn main() -> io::Result<()> {
@@ -78,4 +90,19 @@ fn main() -> io::Result<()> {
     println!("Part 2: {}", p2);
 
     Ok(())
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_real_input() {
+        let input = aoclib::read_file_lines(aoclib::get_test_input_file!(5)).unwrap();
+
+        let p1 = part1(&input);
+        assert_eq!(p1, "TPGVQPFDH");
+
+        let p2 = part2(&input);
+        assert_eq!(p2, "DMRDFRHHH");
+    }
 }

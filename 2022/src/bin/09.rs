@@ -56,9 +56,9 @@ fn part2(input: &Vec<(char, u8)>) -> usize {
             };
 
             for ti in 1..xs.len() {
-                if tail_moves(xs[ti-1], ys[ti-1], xs[ti], ys[ti]) {
-                    xs[ti] += (xs[ti-1] - xs[ti]).signum();
-                    ys[ti] += (ys[ti-1] - ys[ti]).signum();
+                if tail_moves(xs[ti - 1], ys[ti - 1], xs[ti], ys[ti]) {
+                    xs[ti] += (xs[ti - 1] - xs[ti]).signum();
+                    ys[ti] += (ys[ti - 1] - ys[ti]).signum();
                 }
             }
             tail_visited.insert((*xs.last().unwrap(), *ys.last().unwrap()));
@@ -89,4 +89,20 @@ fn parse_input(input: Vec<String>) -> Vec<(char, u8)> {
             (l.chars().next().unwrap(), r.parse().unwrap())
         })
         .collect()
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_real_input() {
+        let input = aoclib::read_file_lines(aoclib::get_test_input_file!(9)).unwrap();
+        let input = parse_input(input);
+
+        let p1 = part1(&input);
+        assert_eq!(p1, 5695);
+
+        let p2 = part2(&input);
+        assert_eq!(p2, 2434);
+    }
 }

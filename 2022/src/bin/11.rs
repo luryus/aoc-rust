@@ -138,3 +138,21 @@ fn main() -> anyhow::Result<()> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_real_input() {
+        let input = std::fs::read_to_string(aoclib::get_test_input_file!(11)).unwrap();
+
+        let input = parse_input(&input);
+
+        let p1 = run(input.clone(), 20, |i| i / 3);
+        assert_eq!(p1, 55944);
+
+        let modulo: usize = input.iter().map(|m| m.test_divisor).product();
+        let p2 = run(input, 10_000, move |i| i % modulo);
+        assert_eq!(p2, 15117269860);
+    }
+}

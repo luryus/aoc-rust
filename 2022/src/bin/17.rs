@@ -183,7 +183,6 @@ fn part1(input: &Vec<char>) -> usize {
     MAX_HEIGHT - state.max_y
 }
 
-
 fn part2(input: &Vec<char>) -> usize {
     let mut tortoise = State::new();
     let mut hare = State::new();
@@ -223,13 +222,13 @@ fn part2(input: &Vec<char>) -> usize {
 
     let dy_skip = dy * skips;
 
-    let y_before_rem =  tortoise.max_y;
+    let y_before_rem = tortoise.max_y;
     for _ in 0..rem_iters {
         tortoise.tick(input);
     }
 
     let dy_rem = tortoise.max_y.abs_diff(y_before_rem);
-    
+
     (MAX_HEIGHT - loop_start_y) + dy_skip + dy_rem
 }
 
@@ -244,4 +243,20 @@ fn main() -> io::Result<()> {
     println!("Part 2: {}", p2);
 
     Ok(())
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_real_input() {
+        let input = std::fs::read_to_string(aoclib::get_test_input_file!(17)).unwrap();
+        let input = input.trim().chars().collect();
+
+        let p1 = part1(&input);
+        assert_eq!(p1, 3166);
+
+        let p2 = part2(&input);
+        assert_eq!(p2, 1577207977186);
+    }
 }

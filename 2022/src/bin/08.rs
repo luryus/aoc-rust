@@ -1,7 +1,6 @@
+use aoclib::iter::TakeUntilInclusiveExt;
 use ndarray::{Array2, ArrayView1};
 use std::io;
-use aoclib::iter::TakeUntilInclusiveExt;
-
 
 fn part1(input: &Array2<u32>) -> usize {
     let mut visible = Array2::zeros(input.raw_dim());
@@ -71,13 +70,23 @@ fn part2(input: &Array2<u32>) -> usize {
 }
 
 #[derive(PartialEq)]
-enum Dir { Up, Down }
+enum Dir {
+    Up,
+    Down,
+}
 
 fn get_score(dir: Dir, arr: ArrayView1<u32>, start: usize, h: u32) -> usize {
     if dir == Dir::Up {
-        arr.iter().skip(start+1).take_until_inclusive(|&&x| x >= h).count()
+        arr.iter()
+            .skip(start + 1)
+            .take_until_inclusive(|&&x| x >= h)
+            .count()
     } else {
-        arr.iter().take(start).rev().take_until_inclusive(|&&x| x >= h).count()
+        arr.iter()
+            .take(start)
+            .rev()
+            .take_until_inclusive(|&&x| x >= h)
+            .count()
     }
 }
 
@@ -91,4 +100,19 @@ fn main() -> io::Result<()> {
     println!("Part 2: {}", p2);
 
     Ok(())
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_real_input() {
+        let input = aoclib::read_file_int_matrix(aoclib::get_test_input_file!(8)).unwrap();
+
+        let p1 = part1(&input);
+        assert_eq!(p1, 1809);
+
+        let p2 = part2(&input);
+        assert_eq!(p2, 479400);
+    }
 }

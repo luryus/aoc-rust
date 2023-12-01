@@ -27,9 +27,12 @@ fn part2(input: &[String]) -> usize {
                 .map(|s| s.as_bytes().iter().copied().collect::<HashSet<_>>())
                 .reduce(|mut a, b| {
                     a.retain(|e| b.contains(e));
-                    a 
+                    a
                 })
-                .unwrap().drain().next().unwrap()
+                .unwrap()
+                .drain()
+                .next()
+                .unwrap()
         })
         .map(|b| {
             (if b.is_ascii_uppercase() {
@@ -51,4 +54,19 @@ fn main() -> io::Result<()> {
     println!("Part 2: {}", p2);
 
     Ok(())
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_real_input() {
+        let input = aoclib::read_file_lines(aoclib::get_test_input_file!(3)).unwrap();
+
+        let p1 = part1(&input);
+        assert_eq!(p1, 7701);
+
+        let p2 = part2(&input);
+        assert_eq!(p2, 2644);
+    }
 }
