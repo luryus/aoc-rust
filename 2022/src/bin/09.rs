@@ -69,7 +69,7 @@ fn part2(input: &Vec<(char, u8)>) -> usize {
 }
 
 fn main() -> io::Result<()> {
-    let input = aoc2022::read_input_lines()?;
+    let input = aoclib::read_input_lines()?;
     let input = parse_input(input);
 
     let p1 = part1(&input);

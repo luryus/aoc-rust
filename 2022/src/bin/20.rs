@@ -23,7 +23,7 @@ fn run(input: &Vec<i64>, rounds: usize, key: i64) -> i64 {
 }
 
 fn main() -> io::Result<()> {
-    let input = aoc2022::read_input_ints(true)?;
+    let input = aoclib::read_input_ints(true)?;
 
     let p1 = run(&input, 1, 1);
     println!("Part 1: {}", p1);

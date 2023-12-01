@@ -373,9 +373,9 @@ enum Instruction {
 }
 
 fn main() -> io::Result<()> {
-    let input = aoc2022::read_input_string()?;
+    let input = aoclib::read_input_string()?;
     let (map, instr_str) = input.split_once("\n\n").unwrap();
-    let map = aoc2022::read_string_char_matrix(map.trim_end())?;
+    let map = aoclib::read_string_char_matrix(map.trim_end())?;
     let instructions = parse_instructions(instr_str.trim());
 
     let p1 = part1(&map, &instructions);

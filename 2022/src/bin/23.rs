@@ -146,7 +146,7 @@ fn parse_input(input: Array2<char>) -> Vec<Coord> {
 }
 
 fn main() -> io::Result<()> {
-    let input = parse_input(aoc2022::read_input_char_matrix()?);
+    let input = parse_input(aoclib::read_input_char_matrix()?);
 
     let p1 = part1(&input);
     println!("Part 1: {}", p1);

@@ -102,7 +102,7 @@ fn parse_input(arr: Array2<char>) -> (Vec<Blizzard>, usize, usize) {
 }
 
 fn main() -> io::Result<()> {
-    let (input, h, w) = parse_input(aoc2022::read_input_char_matrix()?);
+    let (input, h, w) = parse_input(aoclib::read_input_char_matrix()?);
 
     let p1 = run(&input, h, w, 1);
     println!("Part 1: {}", p1);

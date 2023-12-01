@@ -138,7 +138,7 @@ fn parse_input(lines: Vec<String>) -> HashMap<String, Monkey> {
 }
 
 fn main() -> io::Result<()> {
-    let input = parse_input(aoc2022::read_input_lines()?);
+    let input = parse_input(aoclib::read_input_lines()?);
 
     let p1 = part1(&input);
     println!("Part 1: {}", p1);

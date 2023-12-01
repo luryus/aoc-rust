@@ -127,7 +127,7 @@ fn part2(nodes: &HashMap<u8, Node>, dmtx: &DistanceMatrix, start_node: u8) -> us
 }
 
 fn main() -> io::Result<()> {
-    let (nodes, dmtx, start) = parse_input(aoc2022::read_input_lines()?);
+    let (nodes, dmtx, start) = parse_input(aoclib::read_input_lines()?);
 
     let part1 = part1(&nodes, &dmtx, start);
     println!("Part 1: {}", part1);

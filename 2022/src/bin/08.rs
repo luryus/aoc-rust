@@ -1,6 +1,6 @@
 use ndarray::{Array2, ArrayView1};
 use std::io;
-use aoc2022::iter::TakeUntilInclusiveExt;
+use aoclib::iter::TakeUntilInclusiveExt;
 
 
 fn part1(input: &Array2<u32>) -> usize {
@@ -82,7 +82,7 @@ fn get_score(dir: Dir, arr: ArrayView1<u32>, start: usize, h: u32) -> usize {
 }
 
 fn main() -> io::Result<()> {
-    let input = aoc2022::read_input_int_matrix()?;
+    let input = aoclib::read_input_int_matrix()?;
 
     let p1 = part1(&input);
     println!("Part 1: {}", p1);

@@ -34,11 +34,11 @@ fn run(input: Vec<Instruction>) {
     println!("Part 1: {res}");
 
     println!("Part 2:");
-    aoc2022::print_bool_matrix(&disp);
+    aoclib::print_bool_matrix(&disp);
 }
 
 fn main() -> io::Result<()> {
-    let input = aoc2022::read_input_lines()?;
+    let input = aoclib::read_input_lines()?;
     let input = parse_input(input);
 
     run(input);

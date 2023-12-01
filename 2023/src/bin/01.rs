@@ -65,7 +65,7 @@ fn part2(input: &[String]) -> u32 {
 }
 
 fn main() -> io::Result<()> {
-    let input = aoc2023::read_input_lines()?;
+    let input = aoclib::read_input_lines()?;
 
     let p1 = part1(&input);
     println!("Part 1: {}", p1);

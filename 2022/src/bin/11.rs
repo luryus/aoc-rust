@@ -126,7 +126,7 @@ fn run<F: Fn(Item) -> Item>(mut monkeys: Vec<Monkey>, rounds: usize, relax: F) -
 }
 
 fn main() -> anyhow::Result<()> {
-    let input = aoc2022::read_input_string()?;
+    let input = aoclib::read_input_string()?;
     let input = parse_input(&input);
 
     let p1 = run(input.clone(), 20, |i| i / 3);

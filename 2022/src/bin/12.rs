@@ -54,7 +54,7 @@ fn part2(input: &Array2<u8>, target: Coord) -> usize {
 }
 
 fn main() -> io::Result<()> {
-    let mut input = aoc2022::read_input_byte_matrix()?;
+    let mut input = aoclib::read_input_byte_matrix()?;
     let (start, sh) = input.indexed_iter_mut().find(|(_c, el)| el == &&b'S').unwrap();
     *sh = b'a';
     let (target, th) = input.indexed_iter_mut().find(|(_c, el)| el == &&b'E').unwrap();

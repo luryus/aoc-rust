@@ -114,7 +114,7 @@ fn parse_input(lines: Vec<String>) -> Array2<u8> {
 }
 
 fn main() -> io::Result<()> {
-    let input = aoc2022::read_input_lines()?;
+    let input = aoclib::read_input_lines()?;
     let input = parse_input(input);
 
     //print_map(&input);

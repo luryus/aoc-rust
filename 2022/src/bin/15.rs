@@ -114,7 +114,7 @@ fn parse_input(input: Vec<String>) -> ArrayVec<Sensor, MAX_SENSORS> {
     input
         .into_iter()
         .filter_map(|l| {
-            aoc2022::read_ints_from_string(&l, true)
+            aoclib::read_ints_from_string(&l, true)
                 .into_iter()
                 .collect_tuple()
         })
@@ -131,7 +131,7 @@ fn parse_input(input: Vec<String>) -> ArrayVec<Sensor, MAX_SENSORS> {
 fn main() -> io::Result<()> {
     let test_mode = std::env::var("TEST_MODE").is_ok();
 
-    let input = aoc2022::read_input_lines()?;
+    let input = aoclib::read_input_lines()?;
     let input = parse_input(input);
 
     let p1 = part1(&input, test_mode);

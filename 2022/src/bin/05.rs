@@ -33,7 +33,7 @@ fn parse_input(input: &[String]) -> (Vec<Stack>, Vec<Step>) {
 
     let steps = input.iter().skip_while(|l| !l.is_empty())
         .skip(1)
-        .map(|l| aoc2022::read_ints_from_string(l, false))
+        .map(|l| aoclib::read_ints_from_string(l, false))
         .map(|l| Step(l[0], l[1], l[2]))
         .collect();
 
@@ -69,7 +69,7 @@ fn part2(input: &[String]) -> String {
 }
 
 fn main() -> io::Result<()> {
-    let input = aoc2022::read_input_lines()?;
+    let input = aoclib::read_input_lines()?;
 
     let p1 = part1(&input);
     println!("Part 1: {}", p1);
