@@ -61,6 +61,7 @@ dependencies = [
  "aoclib",
  "itertools",
  "lazy_static",
+ "lru",
  "ndarray",
  "num-integer",
  "regex",
