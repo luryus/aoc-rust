@@ -58,19 +58,11 @@ fn arrangements<'a>(
         return arrangements(group_lengths, &springs[1..], cache);
     }
     if first == Some(true) {
-        // let first_group_len = springs
-        //     .iter()
-        //     .take_while(|s| matches!(s, Some(true)))
-        //     .count();
-        // if first_group_len == group_lengths[0] {
-        //     return arrangements(&group_lengths[1..], &springs[first_group_len..]);
-        // }
-
-        // If the group can be formed starting from the first position, and the next spring is not damaged,
-        // it's valid
+        // If the group can be formed starting from the first position,
+        // and the next spring is not damaged, it's valid
         if springs[..group_lengths[0]]
             .iter()
-            .all(|&s| s == Some(true) || s.is_none())
+            .all(|&s| s.unwrap_or(true))
         {
             if springs.len() == group_lengths[0] {
                 return 1;
@@ -81,23 +73,29 @@ fn arrangements<'a>(
                     cache,
                 );
             }
-        }
-
-        // In other cases, this cannot be a valid arrangement
+        } 
+        
+        // If not, this cannot be a valid arrangement
         return 0;
     }
 
+    // First element is unknown.
+
+    // If the spring that would be included in a group starting from the beginning
+    // _don't_ include a damaged spring...
     if !springs[..group_lengths[0]].contains(&Some(true)) {
-        if let Some((last_undamaged_pos, _)) = springs
+        // ...and there's at least one certainly undamaged spring in the group...
+        if let Some((last_undamaged_pos, _)) = springs[..group_lengths[0]]
             .iter()
             .enumerate()
-            .take(group_lengths[0])
             .filter(|(_, s)| **s == Some(false))
             .last()
         {
             if last_undamaged_pos == springs.len() - 1 {
+                // ...bail (this is not valid)
                 return 0;
             } else {
+                // ...skip springs until the next undamaged or unknown one
                 return arrangements(group_lengths, &springs[last_undamaged_pos + 1..], cache);
             }
         }

@@ -5,15 +5,17 @@ fn unsmudge_reflection_score(cm: &Array2<i8>, transposed: bool) -> usize {
     for i in 0..cm.dim().1 - 1 {
         let view_after = cm.slice(s![.., i + 1..]);
         let view_before = cm.slice(s![.., ..i + 1]);
+
+        // Flip the first one
         let mut before_flipped = Array2::default(view_before.dim());
         for (j, c) in view_before.columns().into_iter().enumerate() {
             before_flipped
                 .column_mut(before_flipped.dim().1 - 1 - j)
                 .assign(&c);
         }
-
         let min_cols = before_flipped.dim().1.min(view_after.dim().1);
         before_flipped.slice_collapse(s![.., ..min_cols]);
+        
         let diff = before_flipped - view_after.slice(s![.., ..min_cols]);
 
         if diff.iter().filter(|d| **d != 0).count() == 1 {
