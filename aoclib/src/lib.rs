@@ -166,7 +166,7 @@ pub fn read_file_byte_matrix(filename: &str) -> io::Result<Array2<u8>> {
         .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))
 }
 
-pub fn read_input_int_matrix<T: Integer + From<u32>>() -> io::Result<Array2<T>> {
+pub fn read_input_int_matrix<T: Integer + From<u8>>() -> io::Result<Array2<T>> {
     let cm = read_input_char_matrix()?;
     if !cm.iter().all(|&c| c.is_ascii_digit()) {
         Err(std::io::Error::new(
@@ -174,11 +174,11 @@ pub fn read_input_int_matrix<T: Integer + From<u32>>() -> io::Result<Array2<T>> 
             "Matrix char not a digit",
         ))
     } else {
-        Ok(cm.map(|&c| c.to_digit(10).unwrap().into()))
+        Ok(cm.map(|&c| (c.to_digit(10).unwrap() as u8).into()))
     }
 }
 
-pub fn read_file_int_matrix<T: Integer + From<u32>>(filename: &str) -> io::Result<Array2<T>> {
+pub fn read_file_int_matrix<T: Integer + From<u8>>(filename: &str) -> io::Result<Array2<T>> {
     let cm = read_file_char_matrix(filename)?;
     if !cm.iter().all(|&c| c.is_ascii_digit()) {
         Err(std::io::Error::new(
@@ -186,7 +186,7 @@ pub fn read_file_int_matrix<T: Integer + From<u32>>(filename: &str) -> io::Resul
             "Matrix char not a digit",
         ))
     } else {
-        Ok(cm.map(|&c| c.to_digit(10).unwrap().into()))
+        Ok(cm.map(|&c| (c.to_digit(10).unwrap() as u8).into()))
     }
 }
 
