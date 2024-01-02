@@ -109,7 +109,7 @@ fn dfs3(
 }
 
 fn part1(input: &Array2<char>) -> usize {
-    let (h, w) = input.dim();
+    let (h, _) = input.dim();
     let start_x = input
         .row(0)
         .indexed_iter()
