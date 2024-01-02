@@ -197,7 +197,7 @@ mod test {
     use super::*;
     #[test]
     fn test_real_input() {
-        let input = aoclib::read_file_lines(aoclib::get_test_input_file!(0)).unwrap();
+        let input = aoclib::read_file_lines(aoclib::get_test_input_file!(22)).unwrap();
         let input = parse_input(input);
 
         let (p1, p2) = run(input);

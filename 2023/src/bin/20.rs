@@ -201,12 +201,12 @@ mod test {
     use super::*;
     #[test]
     fn test_real_input() {
-        let input = aoclib::read_file_lines(aoclib::get_test_input_file!(0)).unwrap();
+        let input = aoclib::read_file_lines(aoclib::get_test_input_file!(20)).unwrap();
 
         let p1 = part1(&input);
-        assert_eq!(p1, 0);
+        assert_eq!(p1, 818723272);
 
         let p2 = part2(&input);
-        assert_eq!(p2, 0);
+        assert_eq!(p2, 243902373381257);
     }
 }

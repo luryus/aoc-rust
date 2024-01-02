@@ -1,41 +1,7 @@
 use std::{io, collections::{HashMap, HashSet, VecDeque}};
-use itertools::Itertools;
-
 
 type EdgeMap<'a> = HashMap<&'a str, HashSet<&'a str>>;
 
-fn shortest_paths<'a>(edges: &EdgeMap<'a>) -> HashMap<&'a str, HashMap<&'a str, &'a str>> {
-    let mut dist: HashMap<&str, HashMap<&str, usize>> = HashMap::default();
-    let mut prev: HashMap<&str, HashMap<&str, &str>> = HashMap::default();
-
-    // initialize
-    for (u, u_edges) in edges {
-        let d_entry = dist.entry(u).or_default();
-        d_entry.insert(u, 0);
-        let p_entry = prev.entry(u).or_default();
-        p_entry.insert(u, u);
-        for v in u_edges {
-            d_entry.insert(v, 1);
-            p_entry.insert(v, u);
-        }
-    }
-
-    for i in edges.keys() {
-        println!("i: {}", i);
-        for j in edges.keys() {
-            for k in edges.keys() {
-                if *dist[i].get(j).unwrap_or(&usize::MAX) > dist[i].get(k).unwrap_or(&usize::MAX).saturating_add(*dist[k].get(j).unwrap_or(&usize::MAX)) {
-                    let new_dist = dist[i][k] + dist[k][j];
-                    dist.get_mut(i).unwrap().insert(j, new_dist);
-                    let new_prev = prev[k][j];
-                    prev.get_mut(i).unwrap().insert(j, new_prev);
-                }
-            }
-        }
-    }
-
-    prev
-}
 
 fn shortest_path_edge_counts<'a>(edges: &EdgeMap<'a>) -> HashMap<(&'a str, &'a str), usize> {
 
@@ -88,12 +54,7 @@ fn part1(input: &Vec<String>) -> usize {
         }
     }
 
-    for i in 0..3 {
-        //let paths = shortest_paths(&edges);
-        //let edge_counts = paths.iter()
-        //    .flat_map(|(u, paths)| paths.values().map(move |v| (u, v)))
-        //    .map(|(u, v)| if u > v { (v, u) } else { (u, v) })
-        //    .counts();
+    for _ in 0..3 {
         let edge_counts = shortest_path_edge_counts(&edges);
         let most_common = edge_counts.into_iter().max_by_key(|(_, count)| *count).unwrap();
         println!("Most common edge: {:?}", most_common);
@@ -122,11 +83,6 @@ fn part1(input: &Vec<String>) -> usize {
     println!("Vis: {}, others: {}", vis.len(), edges.len() - vis.len());
 
     vis.len() * (edges.len() - vis.len())
-}
-
-
-fn part2(input: &Vec<String>) -> usize {
-    0
 }
 
 fn main() -> io::Result<()> {
