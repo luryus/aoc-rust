@@ -37,7 +37,7 @@ fn find_loop(start: &str, dirs: &[Dir], nodes: &HashMap<&str, Node>) -> (usize, 
         i += 1;
 
         let n = &nodes[curr];
-        curr = &match d {
+        curr = match d {
             Dir::L => n.left,
             Dir::R => n.right,
         };

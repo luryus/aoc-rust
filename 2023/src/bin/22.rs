@@ -151,7 +151,7 @@ fn run(input: Vec<Brick>) -> (usize, usize) {
 
             let supported = supported_bricks.entry(fb).or_default();
             for s in supported.iter() {
-                if supporting_bricks[&s].iter().all(|sb| fall.contains(sb)) {
+                if supporting_bricks[s].iter().all(|sb| fall.contains(sb)) {
                     q.push_back(*s);
                 }
             }
