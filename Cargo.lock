@@ -59,6 +59,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "aoc2024"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "aoclib",
+ "itertools",
+ "lazy_static",
+ "lru",
+ "nalgebra",
+ "ndarray",
+ "num-complex",
+ "num-integer",
+ "num-rational",
+ "regex",
+]
+
+[[package]]
 name = "aoclib"
 version = "0.1.0"
 dependencies = [
