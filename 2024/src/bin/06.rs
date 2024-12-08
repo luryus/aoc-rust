@@ -1,3 +1,4 @@
+use aoclib::coord2::Coord2;
 use ndarray::Array2;
 use std::io;
 
@@ -30,28 +31,30 @@ impl Dir {
         }
     }
 
-    fn mov(&self, pos: (usize, usize), dim: (usize, usize)) -> Option<(usize, usize)> {
-        let d = self.d();
-        let y = pos.0.checked_add_signed(d.0)?;
-        let x = pos.1.checked_add_signed(d.1)?;
-
-        (y < dim.0 && x < dim.1).then_some((y, x))
+    fn mov(&self, pos: Coord2<usize>, dim: (usize, usize)) -> Option<Coord2<usize>> {
+        let d = self.d().into();
+        pos.checked_add_with_upper(d, dim)
     }
 }
 
 fn part1(input: &Array2<char>) -> usize {
     let mut input = input.clone();
-    let mut pos = input.indexed_iter().find(|(_, &c)| c == '^').unwrap().0;
-    input[pos] = '.';
+    let mut pos: Coord2<usize> = input
+        .indexed_iter()
+        .find(|(_, &c)| c == '^')
+        .unwrap()
+        .0
+        .into();
+    input[pos.usizes()] = '.';
 
     let mut dir = Dir::Up;
     loop {
-        input[pos] = 'x';
+        input[pos.usizes()] = 'x';
         let Some(new_pos) = dir.mov(pos, input.dim()) else {
             break;
         };
 
-        if input[new_pos] == '#' {
+        if input[new_pos.usizes()] == '#' {
             dir = dir.turn();
         } else {
             pos = new_pos;
@@ -62,13 +65,18 @@ fn part1(input: &Array2<char>) -> usize {
 }
 
 fn part2(input: &Array2<char>) -> usize {
-    let mut pos = input.indexed_iter().find(|(_, &c)| c == '^').unwrap().0;
+    let mut pos: Coord2<usize> = input
+        .indexed_iter()
+        .find(|(_, &c)| c == '^')
+        .unwrap()
+        .0
+        .into();
     let mut dir = Dir::Up;
     let mut mtx = input.map(|c| (*c, 0u8));
 
     let mut count: usize = 0;
     loop {
-        mtx[pos].1 |= dir as u8;
+        mtx[pos.usizes()].1 |= dir as u8;
         if check_loop(dir, pos, &mtx) {
             count += 1;
         }
@@ -77,32 +85,32 @@ fn part2(input: &Array2<char>) -> usize {
             break;
         };
 
-        if mtx[new_pos].0 == '#' {
+        if mtx[new_pos.usizes()].0 == '#' {
             dir = dir.turn();
         } else {
             pos = new_pos;
         }
     }
 
-    fn check_loop(mut dir: Dir, mut pos: (usize, usize), mtx: &Array2<(char, u8)>) -> bool {
+    fn check_loop(mut dir: Dir, mut pos: Coord2<usize>, mtx: &Array2<(char, u8)>) -> bool {
         let mut mtx = mtx.clone();
         let Some(block_pos) = dir.mov(pos, mtx.dim()) else {
             return false;
         };
-        let np = &mtx[block_pos];
+        let np = &mtx[block_pos.usizes()];
         if np.0 != '.' || np.1 != 0u8 {
             return false;
         }
-        mtx[block_pos] = ('#', 0);
+        mtx[block_pos.usizes()] = ('#', 0);
 
         loop {
-            mtx[pos].1 |= dir as u8;
+            mtx[pos.usizes()].1 |= dir as u8;
             let Some(new_pos) = dir.mov(pos, mtx.dim()) else {
                 return false;
             };
-            if mtx[new_pos].0 == '#' {
+            if mtx[new_pos.usizes()].0 == '#' {
                 dir = dir.turn();
-            } else if mtx[new_pos].1 & (dir as u8) != 0 {
+            } else if mtx[new_pos.usizes()].1 & (dir as u8) != 0 {
                 // loop
                 return true;
             } else {

@@ -6,6 +6,8 @@ use std::io::{self, Read};
 use std::iter::{repeat, Iterator};
 use std::str::FromStr;
 
+pub mod coord2;
+
 pub fn get_input_filename() -> Option<String> {
     let args: Vec<_> = std::env::args().collect();
     match args.len() {

@@ -1,29 +1,28 @@
+use aoclib::coord2::Coord2;
 use itertools::Itertools;
 use ndarray::Array2;
 use std::io;
 
 fn check(arr: &Array2<char>, y: usize, x: usize) -> usize {
-    let dirs = (-1..=1).cartesian_product(-1..=1);
+    let dirs = (-1..=1).cartesian_product(-1..=1).map_into();
+    let pos = Coord2 { y, x };
 
-    dirs.filter(|d| {
-        if *d == (0, 0) {
+    dirs.filter(|d: &Coord2<isize>| {
+        if *d == Coord2::ZERO {
             return false;
         }
 
-        let Some(ny) = y.checked_add_signed(d.0) else {
-            return false;
-        };
-        let Some(nx) = x.checked_add_signed(d.1) else {
+        let Some(new_pos) = pos.checked_add_with_upper(*d, arr.dim()) else {
             return false;
         };
 
-        check_dir(arr, ny, nx, 'M', *d)
+        check_dir(arr, new_pos, 'M', *d)
     })
     .count()
 }
 
-fn check_dir(arr: &Array2<char>, y: usize, x: usize, state: char, dir: (isize, isize)) -> bool {
-    if y >= arr.dim().0 || x >= arr.dim().1 || arr[(y, x)] != state {
+fn check_dir(arr: &Array2<char>, pos: Coord2<usize>, state: char, dir: Coord2<isize>) -> bool {
+    if arr[pos.usizes()] != state {
         return false;
     }
 
@@ -37,14 +36,8 @@ fn check_dir(arr: &Array2<char>, y: usize, x: usize, state: char, dir: (isize, i
         _ => unreachable!(),
     };
 
-    let Some(ny) = y.checked_add_signed(dir.0) else {
-        return false;
-    };
-    let Some(nx) = x.checked_add_signed(dir.1) else {
-        return false;
-    };
-
-    check_dir(arr, ny, nx, next, dir)
+    pos.checked_add_with_upper(dir, arr.dim())
+        .is_some_and(|new_pos| check_dir(arr, new_pos, next, dir))
 }
 
 fn check_x_mas(arr: &Array2<char>, y: usize, x: usize) -> bool {
