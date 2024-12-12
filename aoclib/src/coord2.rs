@@ -4,6 +4,7 @@ use std::{
     ops::{Add, Mul, Neg, Sub},
 };
 
+use ndarray::{Dim, NdIndex};
 use num_integer::Integer;
 use num_traits::{ConstZero, Signed, Unsigned};
 
@@ -39,6 +40,16 @@ impl<T: Integer + Signed> Coord2<T> {
         self,
     ) -> Result<(U, U), TryFromIntError> {
         Ok((self.y.try_into()?, self.x.try_into()?))
+    }
+}
+
+unsafe impl NdIndex<Dim<[usize; 2]>> for Coord2<usize> {
+    fn index_checked(&self, dim: &Dim<[usize; 2]>, strides: &Dim<[usize; 2]>) -> Option<isize> {
+        self.usizes().index_checked(dim, strides)
+    }
+
+    fn index_unchecked(&self, strides: &Dim<[usize; 2]>) -> isize {
+        self.usizes().index_unchecked(strides)
     }
 }
 
