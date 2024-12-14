@@ -1,12 +1,12 @@
 use std::{
-    fmt::Display,
+    fmt::{Debug, Display},
     num::TryFromIntError,
     ops::{Add, Mul, Neg, Sub},
 };
 
 use ndarray::{Dim, NdIndex};
 use num_integer::Integer;
-use num_traits::{ConstZero, Signed, Unsigned};
+use num_traits::{ConstZero, Signed, Unsigned, Zero};
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
 pub struct Coord2<T: Integer> {
@@ -100,8 +100,14 @@ impl<T: Integer + Signed> Neg for Coord2<T> {
 impl<T: Integer + CheckedSignedSub> Coord2<T> {
     pub fn signed_sub(self, rhs: Self) -> Coord2<<T as CheckedSignedSub>::S> {
         Coord2 {
-            y: self.y.checked_signed_sub(rhs.y).expect("Number out of range"),
-            x: self.x.checked_signed_sub(rhs.x).expect("Number out of range")
+            y: self
+                .y
+                .checked_signed_sub(rhs.y)
+                .expect("Number out of range"),
+            x: self
+                .x
+                .checked_signed_sub(rhs.x)
+                .expect("Number out of range"),
         }
     }
 }
@@ -129,6 +135,25 @@ where
             })
         .then_some(Coord2 { y, x })
     }
+
+    pub fn wrapping_add<B>(self, rhs: Coord2<<T as CheckedAddSigned>::S>, bounds: (B, B)) -> Self
+    where
+        B: Integer + Unsigned + Copy + Debug + Into<T> + TryInto<<T as CheckedAddSigned>::S, Error: Debug>,
+    {
+        let by = bounds.0.try_into().expect("Can't convert unsigned bound to signed");
+        let bx = bounds.1.try_into().expect("Can't convert unsigned bound to signed");
+
+        let dy = rhs.y.mod_floor(&by);
+        let dx = rhs.x.mod_floor(&bx);
+        
+        debug_assert!(dy >= <T as CheckedAddSigned>::S::zero());
+        debug_assert!(dx >= <T as CheckedAddSigned>::S::zero());
+
+        let y = self.y.checked_add_signed(dy).unwrap() % bounds.0.into();
+        let x = self.x.checked_add_signed(dx).unwrap() % bounds.1.into();
+
+        Coord2 { y, x }
+    }
 }
 
 impl<T: Integer + ConstZero + Signed> Coord2<T> {
@@ -151,11 +176,14 @@ impl Coord2<isize> {
 }
 
 impl<T: Integer + ConstZero> Coord2<T> {
-    pub const ZERO: Coord2<T> = Coord2{ y: T::ZERO, x: T::ZERO };
+    pub const ZERO: Coord2<T> = Coord2 {
+        y: T::ZERO,
+        x: T::ZERO,
+    };
 }
 
 pub trait CheckedAddSigned {
-    type S: Integer;
+    type S: Integer + Copy;
 
     fn checked_add_signed(self, other: Self::S) -> Option<Self>
     where
@@ -184,12 +212,17 @@ impl CheckedAddSigned for isize {
 
 pub trait CheckedSignedSub {
     type S: Integer + Signed;
-    fn checked_signed_sub(self, other: Self) -> Option<Self::S> where Self: Sized;
+    fn checked_signed_sub(self, other: Self) -> Option<Self::S>
+    where
+        Self: Sized;
 }
 
 impl CheckedSignedSub for usize {
     type S = isize;
-    fn checked_signed_sub(self, rhs: Self) -> Option<isize> where Self: Sized {
+    fn checked_signed_sub(self, rhs: Self) -> Option<isize>
+    where
+        Self: Sized,
+    {
         // https://github.com/rust-lang/rust/pull/126042
         let res = self.wrapping_sub(rhs) as isize;
         let overflow = (self >= rhs) == (res < 0);
