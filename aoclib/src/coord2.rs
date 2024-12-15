@@ -173,6 +173,11 @@ impl Coord2<isize> {
     pub fn usizes(self) -> (usize, usize) {
         self.try_into_unsigned_tuple().unwrap()
     }
+
+    pub const UP: Self = Coord2 { y: -1, x: 0 };
+    pub const DOWN: Self = Coord2 { y: 1, x: 0 };
+    pub const LEFT: Self = Coord2 { y: 0, x: -1 };
+    pub const RIGHT: Self = Coord2 { y: 0, x: 1 };
 }
 
 impl<T: Integer + ConstZero> Coord2<T> {
