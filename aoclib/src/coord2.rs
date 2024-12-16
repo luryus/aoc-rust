@@ -9,9 +9,20 @@ use num_integer::Integer;
 use num_traits::{ConstZero, Signed, Unsigned, Zero};
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
-pub struct Coord2<T: Integer> {
+pub struct Coord2<T: Integer = usize> {
     pub y: T,
     pub x: T,
+}
+
+impl<T: Ord + Integer> PartialOrd for Coord2<T> {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+impl<T: Ord + Integer> Ord for Coord2<T> {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.y.cmp(&other.y).then(self.x.cmp(&other.x))
+    }
 }
 
 impl<T: Display + Integer> Display for Coord2<T> {
