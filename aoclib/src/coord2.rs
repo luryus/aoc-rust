@@ -54,6 +54,14 @@ impl<T: Integer + Signed> Coord2<T> {
     }
 }
 
+impl<T: Integer + AbsDiff + Copy> Coord2<T> {
+    pub fn manhattan_dist(&self, other: &Self) -> <T as AbsDiff>::Output {
+        let y = self.y.abs_diff(other.y);
+        let x = self.x.abs_diff(other.x);
+        y + x
+    }
+}
+
 unsafe impl NdIndex<Dim<[usize; 2]>> for Coord2<usize> {
     fn index_checked(&self, dim: &Dim<[usize; 2]>, strides: &Dim<[usize; 2]>) -> Option<isize> {
         self.usizes().index_checked(dim, strides)
@@ -248,5 +256,24 @@ impl CheckedSignedSub for usize {
         } else {
             None
         }
+    }
+}
+
+pub trait AbsDiff {
+    type Output: Integer;
+    fn abs_diff(self, other: Self) -> Self::Output;
+}
+
+impl AbsDiff for usize {
+    type Output = usize;
+    fn abs_diff(self, other: Self) -> Self::Output {
+        self.abs_diff(other)
+    }
+}
+
+impl AbsDiff for isize {
+    type Output = usize;
+    fn abs_diff(self, other: Self) -> Self::Output {
+        self.abs_diff(other)
     }
 }
