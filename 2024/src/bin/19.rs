@@ -28,7 +28,6 @@ fn part2(patterns: &[String], rows: &[String]) -> usize {
         row: &'a str,
         pat: &'a str,
     ) -> usize {
-        //println!("{row} {pat}");
         if pat.len() > row.len() || !row.starts_with(pat) {
             return 0;
         }
