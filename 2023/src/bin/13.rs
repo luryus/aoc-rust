@@ -8,9 +8,10 @@ fn unsmudge_reflection_score(cm: &Array2<i8>, transposed: bool) -> usize {
 
         // Flip the first one
         let mut before_flipped = Array2::default(view_before.dim());
+        let before_flipped_dim = before_flipped.dim();
         for (j, c) in view_before.columns().into_iter().enumerate() {
             before_flipped
-                .column_mut(before_flipped.dim().1 - 1 - j)
+                .column_mut(before_flipped_dim.1 - 1 - j)
                 .assign(&c);
         }
         let min_cols = before_flipped.dim().1.min(view_after.dim().1);

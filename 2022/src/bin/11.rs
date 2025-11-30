@@ -37,7 +37,7 @@ impl Monkey {
     }
 
     fn get_target(&self, item: Item) -> Item {
-        if item % self.test_divisor == 0 {
+        if item.is_multiple_of(self.test_divisor) {
             self.true_target_monkey
         } else {
             self.false_target_monkey

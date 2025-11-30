@@ -89,7 +89,7 @@ fn arrangements<'a>(
             .iter()
             .enumerate()
             .filter(|(_, s)| **s == Some(false))
-            .last()
+            .next_back()
         {
             if last_undamaged_pos == springs.len() - 1 {
                 // ...bail (this is not valid)

@@ -146,9 +146,7 @@ fn find_bounds(
 
     if pos > 0 {
         find_bounds(false, id, pos - 1, workflows, lower, upper);
-    } else if id == "in" {
-        return;
-    } else {
+    } else if id != "in" {
         let (id, pos) = workflows
             .values()
             .flat_map(|wf| {
@@ -164,7 +162,7 @@ fn find_bounds(
     }
 }
 
-fn parse_rule(s: &str) -> Option<Rule> {
+fn parse_rule(s: &str) -> Option<Rule<'_>> {
     if let Some((l, r)) = aoclib::split_to_tuple2(s, ":") {
         let num = l[2..].parse().ok()?;
         let field = l.chars().next()?;
@@ -178,7 +176,7 @@ fn parse_rule(s: &str) -> Option<Rule> {
     }
 }
 
-fn parse_input(input: &[String]) -> (HashMap<&str, Workflow>, Vec<Part>) {
+fn parse_input(input: &[String]) -> (HashMap<&str, Workflow<'_>>, Vec<Part>) {
     let (rule_lines, part_lines) = input.split(|l| l.is_empty()).collect_tuple().unwrap();
 
     let workflows = rule_lines

@@ -7,14 +7,14 @@ struct Lens(String, u16);
 type LensBox = Vec<Lens>;
 
 fn hash(s: &str) -> usize {
-    s.chars().fold(0u8, |acc, c| (acc.wrapping_add(c as u8).wrapping_mul(17))).into()
+    s.chars().fold(0u8, |acc, c| acc.wrapping_add(c as u8).wrapping_mul(17)).into()
 }
 
 fn part1(input: &str) -> usize {
     input.split(',').map(hash).sum()
 }
 
-fn parse_step(s: &str) -> Step {
+fn parse_step(s: &str) -> Step<'_> {
     if let Some((label, val)) = aoclib::split_to_tuple2(s, "=") {
         return Step(label, true, val.parse().unwrap());
     }

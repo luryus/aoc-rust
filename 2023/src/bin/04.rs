@@ -16,7 +16,7 @@ fn part1(input: &[Card]) -> usize {
         .sum()
 }
 
-fn part2(input: &Vec<Card>) -> usize {
+fn part2(input: &[Card]) -> usize {
     let mut card_counts: HashMap<usize, usize> = input.iter().map(|c| (c.id, 1)).collect();
     for i in 1..=input.len() {
         let this_card_count = card_counts[&i];

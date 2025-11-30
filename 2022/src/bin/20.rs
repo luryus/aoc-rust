@@ -1,6 +1,6 @@
 use std::{collections::VecDeque, io};
 
-fn run(input: &Vec<i64>, rounds: usize, key: i64) -> i64 {
+fn run(input: &[i64], rounds: usize, key: i64) -> i64 {
     let len = input.len() as i64;
     let mut ll: VecDeque<_> = input.iter().copied().map(|n| n * key).enumerate().collect();
 

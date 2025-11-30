@@ -3,7 +3,7 @@ use ndarray::{Array2, ArrayView2};
 use num_integer::Integer;
 use regex::Regex;
 use std::io::{self, Read};
-use std::iter::{repeat, Iterator};
+use std::iter::Iterator;
 use std::str::FromStr;
 
 pub mod coord2;
@@ -139,7 +139,7 @@ pub fn read_string_char_matrix(str: &str) -> io::Result<Array2<char>> {
                 if l.len() < w {
                     Either::Left(
                         l.chars()
-                            .chain(repeat(Default::default()).take(w - l.len())),
+                            .chain(std::iter::repeat_n(Default::default(), w - l.len())),
                     )
                 } else {
                     Either::Right(l.chars())

@@ -66,14 +66,14 @@ fn part2(dirs: &[Dir], nodes: &HashMap<&str, Node>) -> usize {
     // loop cycle --> lcm is enough to get the final result
     // This is _not_ a general solution, but AoC is designed so that this works,
     // this is day 8 after all
-    return loops
+    loops
         .iter()
         .map(|(_, l)| *l)
         .reduce(|a, b| a.lcm(&b))
-        .unwrap();
+        .unwrap()
 }
 
-fn parse_input(input: &[String]) -> (Vec<Dir>, HashMap<&str, Node>) {
+fn parse_input(input: &[String]) -> (Vec<Dir>, HashMap<&str, Node<'_>>) {
     let dirs = input[0]
         .chars()
         .map(|c| match c {

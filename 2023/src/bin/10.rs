@@ -280,7 +280,7 @@ fn part2(mut input: Array2<char>) -> usize {
         }
     }
 
-    return fills.iter().filter(|f| !f.any_filled()).count();
+    fills.iter().filter(|f| !f.any_filled()).count()
 }
 
 fn main() -> io::Result<()> {

@@ -137,7 +137,7 @@ impl State {
             max_y: MAX_HEIGHT,
         }
     }
-    fn tick(&mut self, winds: &Vec<char>) {
+    fn tick(&mut self, winds: &[char]) {
         let current_shape = self.next_shape;
         let mut block = Block::new(current_shape, self.max_y - 3);
 
@@ -173,7 +173,7 @@ impl State {
     }
 }
 
-fn part1(input: &Vec<char>) -> usize {
+fn part1(input: &[char]) -> usize {
     let mut state = State::new();
 
     for _ in 0..2022 {
@@ -183,7 +183,7 @@ fn part1(input: &Vec<char>) -> usize {
     MAX_HEIGHT - state.max_y
 }
 
-fn part2(input: &Vec<char>) -> usize {
+fn part2(input: &[char]) -> usize {
     let mut tortoise = State::new();
     let mut hare = State::new();
 
@@ -234,7 +234,7 @@ fn part2(input: &Vec<char>) -> usize {
 
 fn main() -> io::Result<()> {
     let input = aoclib::read_input_string()?;
-    let input = input.trim().chars().collect();
+    let input: Vec<_> = input.trim().chars().collect();
 
     let p1 = part1(&input);
     println!("Part 1: {}", p1);
@@ -251,7 +251,7 @@ mod test {
     #[test]
     fn test_real_input() {
         let input = std::fs::read_to_string(aoclib::get_test_input_file!(17)).unwrap();
-        let input = input.trim().chars().collect();
+        let input: Vec<_> = input.trim().chars().collect();
 
         let p1 = part1(&input);
         assert_eq!(p1, 3166);

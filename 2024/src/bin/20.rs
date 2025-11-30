@@ -5,7 +5,7 @@ use std::{collections::HashMap, io};
 use tailcall::tailcall;
 
 fn find_no_cheat_distances(map: &Array2<char>, start: Coord2) -> HashMap<Coord2, usize> {
-    #[allow(unreachable_code)]
+    #[expect(unreachable_code)]
     #[tailcall]
     fn visit(
         map: &Array2<char>,
@@ -31,8 +31,10 @@ fn find_no_cheat_distances(map: &Array2<char>, start: Coord2) -> HashMap<Coord2,
     no_cheat_distances
 }
 
+#[expect(unreachable_code)]
 #[tailcall]
-fn find_cheats<const N: usize>(
+fn find_cheats(
+    n: usize,
     map: &Array2<char>,
     no_cheat_dists: &HashMap<Coord2, usize>,
     pos: Coord2,
@@ -40,15 +42,15 @@ fn find_cheats<const N: usize>(
     d: usize,
     cheat_count: &mut usize,
 ) {
-    let y_min = pos.y.saturating_sub(N);
-    let x_min = pos.x.saturating_sub(N);
-    let y_max = (pos.y + N).min(map.dim().0 - 1);
-    let x_max = (pos.x + N).min(map.dim().1 - 1);
+    let y_min = pos.y.saturating_sub(n);
+    let x_min = pos.x.saturating_sub(n);
+    let y_max = (pos.y + n).min(map.dim().0 - 1);
+    let x_max = (pos.x + n).min(map.dim().1 - 1);
 
     for (ty, tx) in (y_min..=y_max).cartesian_product(x_min..=x_max) {
         let tc: Coord2 = (ty, tx).into();
         let dist = pos.manhattan_dist(&tc);
-        if dist > N {
+        if dist > n {
             continue;
         }
         if map[tc] == '#' || tc == pos {
@@ -72,7 +74,7 @@ fn find_cheats<const N: usize>(
         return;
     };
 
-    find_cheats::<N>(map, no_cheat_dists, next, pos, d + 1, cheat_count);
+    find_cheats(n, map, no_cheat_dists, next, pos, d + 1, cheat_count)
 }
 
 fn run<const N: usize>(map: &Array2<char>, start: Coord2, end: Coord2) -> usize {
@@ -80,7 +82,7 @@ fn run<const N: usize>(map: &Array2<char>, start: Coord2, end: Coord2) -> usize 
     assert!(no_cheat_distances.contains_key(&end));
 
     let mut cc = 0;
-    find_cheats::<N>(map, &no_cheat_distances, start, start, 0, &mut cc);
+    find_cheats(N, map, &no_cheat_distances, start, start, 0, &mut cc);
     cc
 }
 

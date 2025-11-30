@@ -29,7 +29,7 @@ fn seq(mut x: usize) -> (Vec<i8>, Vec<i8>) {
     let changes = std::iter::once(first).chain(res
         .iter().copied())
         .tuple_windows()
-        .map(|(a, b)| (b - a))
+        .map(|(a, b)| b - a)
         .collect();
 
     (res, changes)

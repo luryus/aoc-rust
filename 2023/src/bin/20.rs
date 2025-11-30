@@ -69,7 +69,7 @@ impl<'b> Modules<'b> {
     }
 }
 
-fn parse(input: &Vec<String>) -> Modules {
+fn parse(input: &Vec<String>) -> Modules<'_> {
     let mut broadcast = None;
     let mut conjunctions = HashMap::new();
     let mut flipflops = HashMap::new();
