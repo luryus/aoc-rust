@@ -15,7 +15,7 @@ with open(sess_token_file, 'r') as f:
     sesstoken = f.read().strip()
 
 conn = client.HTTPSConnection("adventofcode.com")
-conn.request('GET', f'/2024/day/{args.day_num}/input',
+conn.request('GET', f'/2025/day/{args.day_num}/input',
              headers={
                  'User-Agent': 'github.com/luryus/aoc-rust by lk@lkoskela.com',
                  'Cookie': f'session={sesstoken}'
