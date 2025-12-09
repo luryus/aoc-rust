@@ -1,7 +1,7 @@
 use std::io;
 use num_integer::Integer;
 
-fn part1(input: &Vec<i64>) -> usize {
+fn part1(input: &[i64]) -> usize {
     input.iter().scan(50, |acc, x| {
         *acc = (*acc + x + 100) % 100;
         Some(*acc)
@@ -9,7 +9,7 @@ fn part1(input: &Vec<i64>) -> usize {
 }
 
 
-fn part2(input: &Vec<i64>) -> usize {
+fn part2(input: &[i64]) -> usize {
     let mut c = 0;
     let mut acc = 50i64;
     for i in input {
