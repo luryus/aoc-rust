@@ -32,7 +32,7 @@ fn area(a: &Coord2, b: &Coord2) -> usize {
     (a.x.abs_diff(b.x) + 1) * (a.y.abs_diff(b.y) + 1)
 }
 
-fn part1(input: &Vec<Coord2>) -> usize {
+fn part1(input: &[Coord2]) -> usize {
     input
         .iter()
         .tuple_combinations()
@@ -42,10 +42,18 @@ fn part1(input: &Vec<Coord2>) -> usize {
 }
 
 fn is_inside(c: Coord2, vertical_edges: &[Line], hor_edges: &[Line]) -> bool {
-    if hor_edges.iter().take_while(|e| e.0.y <= c.y).any(|l| l.contains(&c)) {
+    if hor_edges
+        .iter()
+        .take_while(|e| e.0.y <= c.y)
+        .any(|l| l.contains(&c))
+    {
         return true;
     }
-    if vertical_edges.iter().take_while(|e| e.0.x <= c.x).any(|l| l.contains(&c)) {
+    if vertical_edges
+        .iter()
+        .take_while(|e| e.0.x <= c.x)
+        .any(|l| l.contains(&c))
+    {
         return true;
     }
 
@@ -84,7 +92,7 @@ fn intersection_point(a: &Line, b: &Line) -> Option<Coord2> {
     }
 }
 
-fn part2(input: &Vec<Coord2>) -> usize {
+fn part2(input: &[Coord2]) -> usize {
     let (mut vert_edges, mut hor_edges) = input
         .iter()
         .chain(std::iter::once(&input[0]))
@@ -118,7 +126,7 @@ fn part2(input: &Vec<Coord2>) -> usize {
         let hor_line_2 = Line(Coord2 { y: b.y, x: a.x }, Coord2 { y: b.y, x: b.x });
         for ve in &vert_edges {
             for hl in [&hor_line_1, &hor_line_2] {
-                if let Some(ip) = intersection_point(ve, &hl) {
+                if let Some(ip) = intersection_point(ve, hl) {
                     let left = Coord2 {
                         y: ip.y,
                         x: ip.x - 1,
@@ -140,7 +148,7 @@ fn part2(input: &Vec<Coord2>) -> usize {
         let ver_line_2 = Line(Coord2 { y: a.y, x: b.x }, Coord2 { y: b.y, x: b.x });
         for he in &hor_edges {
             for vl in [&ver_line_1, &ver_line_2] {
-                if let Some(ip) = intersection_point(he, &vl) {
+                if let Some(ip) = intersection_point(he, vl) {
                     let top = Coord2 {
                         y: ip.y - 1,
                         x: ip.x,

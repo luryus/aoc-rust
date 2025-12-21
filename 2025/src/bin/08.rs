@@ -1,5 +1,5 @@
-use std::{collections::{HashMap}, io, str::FromStr, u32};
 use itertools::Itertools;
+use std::{collections::HashMap, io, str::FromStr};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
 struct Point(u32, u32, u32);
@@ -21,10 +21,9 @@ impl Point {
         let dx = self.0.abs_diff(other.0) as u64;
         let dy = self.1.abs_diff(other.1) as u64;
         let dz = self.2.abs_diff(other.2) as u64;
-        dx*dx + dy*dy + dz*dz
+        dx * dx + dy * dy + dz * dz
     }
 }
-
 
 fn run(input: &Vec<Point>) -> (usize, usize) {
     let mut all_pairs = vec![];
@@ -54,14 +53,18 @@ fn run(input: &Vec<Point>) -> (usize, usize) {
         let bg = groups.get(b).copied();
 
         match (ag, bg) {
-            (Some(g), None) => { groups.insert(*b, g); },
-            (None, Some(g)) => { groups.insert(*a, g); },
+            (Some(g), None) => {
+                groups.insert(*b, g);
+            }
+            (None, Some(g)) => {
+                groups.insert(*a, g);
+            }
             (None, None) => {
                 groups.insert(*a, max_group);
                 groups.insert(*b, max_group);
                 max_group += 1;
                 group_count += 1;
-            },
+            }
             (Some(aa), Some(bb)) if aa != bb => {
                 for (_, v) in groups.iter_mut() {
                     if *v == bb {
@@ -74,21 +77,25 @@ fn run(input: &Vec<Point>) -> (usize, usize) {
         }
 
         if i == 1000 {
-            part1 = groups.values().counts().values().k_largest(3).copied().product()
-        }
-        else if group_count == 1 && groups.len() == input.len() {
+            part1 = groups
+                .values()
+                .counts()
+                .values()
+                .k_largest(3)
+                .copied()
+                .product()
+        } else if group_count == 1 && groups.len() == input.len() {
             part2 = a.0 as usize * b.0 as usize;
             break;
         }
     }
 
     (part1, part2)
-
 }
 
 fn parse_input(lines: &[String]) -> Vec<Point> {
-    lines.into_iter().map(|l| l.parse().unwrap()).collect()
-} 
+    lines.iter().map(|l| l.parse().unwrap()).collect()
+}
 
 fn main() -> io::Result<()> {
     let input = parse_input(&aoclib::read_input_lines()?);

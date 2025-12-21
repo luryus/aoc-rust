@@ -2,8 +2,8 @@ use aoclib::{UnwrapOptionIterator, coord2::Coord2};
 use arrayvec::ArrayVec;
 use itertools::Itertools;
 use ndarray::{Array2, s};
-use std::{collections::HashMap, io, sync::OnceLock};
 use rayon::prelude::*;
+use std::{collections::HashMap, io, sync::OnceLock};
 
 static SHAPE_VARIANT_CACHE: OnceLock<HashMap<Shape, Vec<Shape>>> = OnceLock::new();
 
@@ -63,7 +63,9 @@ impl Shape {
 struct Space((usize, usize), Vec<usize>);
 
 fn part1(shapes: &Vec<Shape>, spaces: &Vec<Space>) -> usize {
-    SHAPE_VARIANT_CACHE.set(shapes.iter().map(|s| (s.clone(), s.variants())).collect()).unwrap();
+    SHAPE_VARIANT_CACHE
+        .set(shapes.iter().map(|s| (s.clone(), s.variants())).collect())
+        .unwrap();
     return spaces.par_iter().filter(|s| is_possible(s, shapes)).count();
 
     fn is_possible(space: &Space, shapes: &Vec<Shape>) -> bool {
@@ -87,18 +89,26 @@ fn part1(shapes: &Vec<Shape>, spaces: &Vec<Space>) -> usize {
             return true;
         }
 
-        let new_small_holes = find_holes(small_holes, &map);
-        let effective_space_remaining = h*w - new_small_holes.map(|b| *b as usize).sum() - map.map(|b| *b as usize).sum();
-        let space_still_needed = counts_remaining.iter().enumerate().map(|(pos, rem)| shapes[pos].count() * rem).sum();
+        let new_small_holes = find_holes(small_holes, map);
+        let effective_space_remaining =
+            h * w - new_small_holes.map(|b| *b as usize).sum() - map.map(|b| *b as usize).sum();
+        let space_still_needed = counts_remaining
+            .iter()
+            .enumerate()
+            .map(|(pos, rem)| shapes[pos].count() * rem)
+            .sum();
         if effective_space_remaining < space_still_needed {
             return false;
         }
 
-        for sh_idx in 0..counts_remaining.len(){ 
+        for sh_idx in 0..counts_remaining.len() {
             if counts_remaining[sh_idx] == 0 {
                 continue;
             }
-            let sh_variants = SHAPE_VARIANT_CACHE.get().and_then(|cache| cache.get(&shapes[sh_idx])).unwrap();
+            let sh_variants = SHAPE_VARIANT_CACHE
+                .get()
+                .and_then(|cache| cache.get(&shapes[sh_idx]))
+                .unwrap();
 
             let ymin = prev_y.saturating_sub(3);
             let ymax = prev_y + 3;
@@ -136,7 +146,7 @@ fn part1(shapes: &Vec<Shape>, spaces: &Vec<Space>) -> usize {
         let (h, w) = small_holes.dim();
         for (y, x) in (0..h).cartesian_product(0..w) {
             if map[(y, x)] || new[(y, x)] {
-                continue
+                continue;
             }
 
             let mut coords: ArrayVec<Coord2, 12> = Default::default();
@@ -152,7 +162,11 @@ fn part1(shapes: &Vec<Shape>, spaces: &Vec<Space>) -> usize {
                     curr.checked_add_with_upper((1isize, 0isize).into(), (h, w)),
                     curr.checked_add_with_upper((0isize, -1isize).into(), (h, w)),
                     curr.checked_add_with_upper((0isize, 1isize).into(), (h, w)),
-                ].into_iter().filter_map(|c| c).filter(|c| !coords.contains(c) && !map[c.usizes()]).collect();
+                ]
+                .into_iter()
+                .flatten()
+                .filter(|c| !coords.contains(c) && !map[c.usizes()])
+                .collect();
                 coords.extend(adjacent);
             }
 
@@ -213,7 +227,9 @@ mod test {
     use super::*;
     #[test]
     fn test_real_input() {
-        let (shapes, spaces) = parse_input(std::fs::read_to_string(aoclib::get_test_input_file!(12)).unwrap()).unwrap();
+        let (shapes, spaces) =
+            parse_input(std::fs::read_to_string(aoclib::get_test_input_file!(12)).unwrap())
+                .unwrap();
 
         let p1 = part1(&shapes, &spaces);
         assert_eq!(p1, 565);

@@ -1,19 +1,21 @@
-use std::io;
 use itertools::Itertools;
+use std::io;
 
 fn part1(input: &[String]) -> usize {
     let (ranges, ings) = parse_input(input);
 
-    ings.into_iter().filter(|i| ranges.iter().any(|(a, b)| i >= a && i <= b)).count()
+    ings.into_iter()
+        .filter(|i| ranges.iter().any(|(a, b)| i >= a && i <= b))
+        .count()
 }
 
-fn overlap(al: u64, ah: u64, bl: u64 ,bh: u64) -> bool {
+fn overlap(al: u64, ah: u64, bl: u64, bh: u64) -> bool {
     al <= bh && bl <= ah
 }
 
 fn part2(input: &[String]) -> usize {
     let (mut ranges, _) = parse_input(input);
-    
+
     loop {
         let mut valid: Vec<(u64, u64)> = vec![];
         for &(rl, rh) in &ranges {
@@ -54,10 +56,13 @@ fn main() -> io::Result<()> {
 fn parse_input(inp: &[String]) -> (Vec<(u64, u64)>, Vec<u64>) {
     let (ranges, ings) = inp.split(|l| l.is_empty()).collect_tuple().unwrap();
 
-    let ranges = ranges.iter().map(|l| {
-        let (a, b) = aoclib::split_to_tuple2(l, "-").unwrap();
-        (a.parse().unwrap(), b.parse().unwrap())
-    }).collect();
+    let ranges = ranges
+        .iter()
+        .map(|l| {
+            let (a, b) = aoclib::split_to_tuple2(l, "-").unwrap();
+            (a.parse().unwrap(), b.parse().unwrap())
+        })
+        .collect();
 
     let ings = ings.iter().map(|l| l.parse().unwrap()).collect();
 

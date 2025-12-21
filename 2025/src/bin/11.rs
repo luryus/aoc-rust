@@ -1,5 +1,5 @@
-use std::{collections::HashMap, io};
 use aoclib::UnwrapOptionIterator;
+use std::{collections::HashMap, io};
 
 struct Dev<'a>(Vec<&'a str>);
 
@@ -7,7 +7,7 @@ fn part1(input: &HashMap<&str, Dev>) -> usize {
     return step(input, "you");
 
     fn step(input: &HashMap<&str, Dev>, curr: &str) -> usize {
-        if curr == "out" { 
+        if curr == "out" {
             1
         } else {
             let dev = input.get(curr).unwrap();
@@ -16,25 +16,28 @@ fn part1(input: &HashMap<&str, Dev>) -> usize {
     }
 }
 
-
 fn part2(input: &HashMap<&str, Dev>) -> usize {
     let mut cache = HashMap::new();
     return step(input, &mut cache, "svr", false, false);
 
-    fn step<'a>(input: &'a HashMap<&'a str, Dev>, cache: &mut HashMap<(&'a str, bool, bool), usize>, curr: &'a str, fft_seen: bool, dac_seen: bool) -> usize {
-        if curr == "out" { 
+    fn step<'a>(
+        input: &'a HashMap<&'a str, Dev>,
+        cache: &mut HashMap<(&'a str, bool, bool), usize>,
+        curr: &'a str,
+        fft_seen: bool,
+        dac_seen: bool,
+    ) -> usize {
+        if curr == "out" {
             (fft_seen && dac_seen) as usize
         } else {
             let fft = fft_seen || (curr == "fft");
             let dac = dac_seen || (curr == "dac");
             let cache_key = (curr, fft, dac);
-            if let Some(c) = cache.get(&cache_key)  {
+            if let Some(c) = cache.get(&cache_key) {
                 *c
             } else {
                 let dev = input.get(curr).unwrap();
-                let res = dev.0.iter().map(|n| {
-                    step(input, cache, n, fft, dac)
-                }).sum();
+                let res = dev.0.iter().map(|n| step(input, cache, n, fft, dac)).sum();
                 cache.insert(cache_key, res);
                 res
             }
@@ -56,11 +59,15 @@ fn main() -> io::Result<()> {
 }
 
 fn parse_devs(input: &[String]) -> HashMap<&str, Dev<'_>> {
-    input.iter().map(|l| {
-        let (name, conns) = aoclib::split_to_tuple2(l, ": ")?;
-        let conns = conns.split_ascii_whitespace().collect();
-        Some((name, Dev(conns)))
-    }).unwrap_options().collect()
+    input
+        .iter()
+        .map(|l| {
+            let (name, conns) = aoclib::split_to_tuple2(l, ": ")?;
+            let conns = conns.split_ascii_whitespace().collect();
+            Some((name, Dev(conns)))
+        })
+        .unwrap_options()
+        .collect()
 }
 
 #[cfg(test)]

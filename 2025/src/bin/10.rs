@@ -1,15 +1,14 @@
 use arrayvec::ArrayVec;
 use fraction::GenericFraction;
+use fraction::{ConstOne, ConstZero};
 use ndarray::{Array1, Array2};
 use rayon::prelude::*;
 use std::{
     collections::{HashSet, VecDeque},
     io,
 };
-use fraction::{ConstOne, ConstZero};
 
 type F = GenericFraction<i32>;
-
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 struct Button(Vec<usize>);
@@ -23,8 +22,8 @@ struct Machine {
 
 struct BfsState1(Vec<bool>, usize, ArrayVec<usize, 12>);
 
-fn part1(input: &Vec<Machine>) -> usize {
-    let counts = input.iter().map(|i| search(i)).sum();
+fn part1(input: &[Machine]) -> usize {
+    let counts = input.iter().map(search).sum();
     return counts;
 
     fn search(m: &Machine) -> usize {
@@ -35,7 +34,11 @@ fn part1(input: &Vec<Machine>) -> usize {
         let mut q = VecDeque::new();
         let mut visited = HashSet::new();
 
-        q.push_back(BfsState1(vec![false; indicator_count], 0, Default::default()));
+        q.push_back(BfsState1(
+            vec![false; indicator_count],
+            0,
+            Default::default(),
+        ));
 
         while let Some(BfsState1(state_ind, depth, pressed)) = q.pop_front() {
             if state_ind == m.indicators {
@@ -72,7 +75,6 @@ fn part2(input: &Vec<Machine>) -> usize {
     return counts;
 
     fn solve(m: &Machine) -> usize {
-        
         // Create matrix
         // Buttons are columns, final column the joltages
         let h = m.joltage.len();
@@ -80,7 +82,7 @@ fn part2(input: &Vec<Machine>) -> usize {
         let mut mtx = ndarray::Array2::zeros((h, w));
 
         for (i, j) in m.joltage.iter().enumerate() {
-            mtx[(i, w-1)] = F::new(*j as i32, 1); 
+            mtx[(i, w - 1)] = F::new(*j as i32, 1);
         }
 
         for (j, but) in m.buttons.iter().enumerate() {
@@ -92,10 +94,15 @@ fn part2(input: &Vec<Machine>) -> usize {
         // Transform to row echelon
         let mut row = 0;
         let mut col = 0;
-        while row < h && col < w-1 {
+        while row < h && col < w - 1 {
             // Find row with max value in column col
-            let column= mtx.column(col);
-            let Some(pivot_row) = column.indexed_iter().skip(row).max_by_key(|(_, x)| x.abs()).filter(|(_, x)| **x != F::ZERO) else {
+            let column = mtx.column(col);
+            let Some(pivot_row) = column
+                .indexed_iter()
+                .skip(row)
+                .max_by_key(|(_, x)| x.abs())
+                .filter(|(_, x)| **x != F::ZERO)
+            else {
                 col += 1;
                 continue;
             };
@@ -106,11 +113,11 @@ fn part2(input: &Vec<Machine>) -> usize {
             mtx.row_mut(row).assign(&pivot_row);
             mtx.row_mut(pivot_row_idx).assign(&r_row);
 
-            for y in (row+1)..h {
+            for y in (row + 1)..h {
                 let f = mtx[(y, col)] / mtx[(row, col)];
                 assert!(!f.is_nan());
                 mtx[(y, col)] = F::new_raw(0, 1);
-                for x in (col+1)..w {
+                for x in (col + 1)..w {
                     let r = mtx[(row, x)] * f;
                     mtx[(y, x)] -= r;
                 }
@@ -119,7 +126,15 @@ fn part2(input: &Vec<Machine>) -> usize {
             col += 1;
         }
 
-        let pivot_button_indices: Vec<_> = mtx.rows().into_iter().filter_map(|r| r.indexed_iter().filter_map(|(pos, v)| (v != &F::ZERO).then(|| pos)).next()).collect();
+        let pivot_button_indices: Vec<_> = mtx
+            .rows()
+            .into_iter()
+            .filter_map(|r| {
+                r.indexed_iter()
+                    .filter_map(|(pos, v)| (v != &F::ZERO).then_some(pos))
+                    .next()
+            })
+            .collect();
         let mut free_vars: Vec<_> = Default::default();
         for i in 0..m.buttons.len() {
             if pivot_button_indices.contains(&i) {
@@ -135,10 +150,15 @@ fn part2(input: &Vec<Machine>) -> usize {
     }
 
     // DFS search for minimum valid free variables
-    fn search(mtx: &Array2<F>, free_var_defs: &Vec<(usize, i32)>, free_var_values: &mut Vec<(usize, i32)>, depth: usize) -> Option<usize> {
+    fn search(
+        mtx: &Array2<F>,
+        free_var_defs: &Vec<(usize, i32)>,
+        free_var_values: &mut Vec<(usize, i32)>,
+        depth: usize,
+    ) -> Option<usize> {
         if depth == free_var_defs.len() {
             return solve_mtx(mtx, free_var_values);
-        }   
+        }
 
         let (pos, max) = free_var_defs[depth];
         let mut best = usize::MAX;
@@ -146,16 +166,16 @@ fn part2(input: &Vec<Machine>) -> usize {
             free_var_values[depth] = (pos, i);
             match search(mtx, free_var_defs, free_var_values, depth + 1) {
                 None => continue,
-                Some(r) => best = best.min(r)
+                Some(r) => best = best.min(r),
             };
         }
 
-        (best != usize::MAX).then(|| best)
+        (best != usize::MAX).then_some(best)
     }
 
     fn solve_mtx(mtx: &Array2<F>, free_var_values: &Vec<(usize, i32)>) -> Option<usize> {
         let (h, w) = mtx.dim();
-        let mut btns = Array1::zeros(w-1);
+        let mut btns = Array1::zeros(w - 1);
         for &(pos, val) in free_var_values {
             btns[pos] = val;
         }
@@ -163,8 +183,11 @@ fn part2(input: &Vec<Machine>) -> usize {
         for y in (0..h).rev() {
             let row = mtx.row(y);
             let constant = row[row.len() - 1];
-            let Some((pivot_pos, pivot_coeff)) = row.indexed_iter().filter(|(_, val)| **val != F::ZERO ).next() else {
-                continue
+            let Some((pivot_pos, pivot_coeff)) = row
+                .indexed_iter()
+                .find(|(_, val)| **val != F::ZERO)
+            else {
+                continue;
             };
 
             let sum_known: F = row.iter().zip(&btns).map(|(a, b)| a * *b).sum();
@@ -180,7 +203,6 @@ fn part2(input: &Vec<Machine>) -> usize {
         Some(btns.sum() as usize)
     }
 }
-
 
 fn parse_input(input: Vec<String>) -> Vec<Machine> {
     input

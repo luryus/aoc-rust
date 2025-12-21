@@ -1,13 +1,16 @@
-use std::io;
 use num_integer::Integer;
+use std::io;
 
 fn part1(input: &[i64]) -> usize {
-    input.iter().scan(50, |acc, x| {
-        *acc = (*acc + x + 100) % 100;
-        Some(*acc)
-    }).filter(|x| *x == 0).count()
+    input
+        .iter()
+        .scan(50, |acc, x| {
+            *acc = (*acc + x + 100) % 100;
+            Some(*acc)
+        })
+        .filter(|x| *x == 0)
+        .count()
 }
-
 
 fn part2(input: &[i64]) -> usize {
     let mut c = 0;
@@ -22,16 +25,14 @@ fn part2(input: &[i64]) -> usize {
     c
 }
 
-
 fn parse_input(lines: Vec<String>) -> Vec<i64> {
-    lines.into_iter().map(|l| {
-        let num: i64 = l[1..].parse().unwrap();
-        if l.starts_with('L') {
-            -num
-        } else {
-            num
-        }
-    }).collect()
+    lines
+        .into_iter()
+        .map(|l| {
+            let num: i64 = l[1..].parse().unwrap();
+            if l.starts_with('L') { -num } else { num }
+        })
+        .collect()
 }
 
 fn main() -> io::Result<()> {

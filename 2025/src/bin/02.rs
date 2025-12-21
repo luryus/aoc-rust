@@ -58,9 +58,7 @@ fn main() -> io::Result<()> {
 }
 
 fn parse_input(inp: Vec<u64>) -> Vec<RangeInclusive<u64>> {
-    inp.as_chunks::<2>().0.iter()
-        .map(|x| x[0]..=x[1])
-        .collect()
+    inp.as_chunks::<2>().0.iter().map(|x| x[0]..=x[1]).collect()
 }
 
 #[cfg(test)]

@@ -1,5 +1,5 @@
-use std::{collections::HashMap, io};
 use ndarray::Array2;
+use std::{collections::HashMap, io};
 
 fn part1(input: &Array2<char>) -> usize {
     let mut map = input.clone();
@@ -18,10 +18,10 @@ fn part1(input: &Array2<char>) -> usize {
     for y in 2..h {
         for x in 0..w {
             if map[(y, x)] == '^' && map[(y - 1, x)] == '|' {
-                map[(y, x-1)] = '|';
-                map[(y, x+1)] = '|';
+                map[(y, x - 1)] = '|';
+                map[(y, x + 1)] = '|';
                 splits += 1;
-            } else if map[(y, x)] == '.' && map[(y-1, x)] == '|' {
+            } else if map[(y, x)] == '.' && map[(y - 1, x)] == '|' {
                 map[(y, x)] = '|';
             }
         }
@@ -30,20 +30,24 @@ fn part1(input: &Array2<char>) -> usize {
     splits
 }
 
-
-fn get_timeline_count(map: &Array2<char>, y: usize, x: usize, cache: &mut HashMap<(usize, usize), usize>) -> usize {
+fn get_timeline_count(
+    map: &Array2<char>,
+    y: usize,
+    x: usize,
+    cache: &mut HashMap<(usize, usize), usize>,
+) -> usize {
     if let Some(cached) = cache.get(&(y, x)) {
         return *cached;
     }
 
-    if y == (map.dim().0 -1) {
+    if y == (map.dim().0 - 1) {
         return 1;
     }
 
     let res = match map[(y, x)] {
-        '.'|'S' => get_timeline_count(map, y + 1, x, cache),
+        '.' | 'S' => get_timeline_count(map, y + 1, x, cache),
         '^' => get_timeline_count(map, y, x - 1, cache) + get_timeline_count(map, y, x + 1, cache),
-        _ => unreachable!()
+        _ => unreachable!(),
     };
 
     cache.insert((y, x), res);
